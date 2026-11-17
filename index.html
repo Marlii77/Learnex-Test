@@ -3,56 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studyplus — Lernplattform &amp; Study Planner</title>
-  <!-- Google Fonts: Inter -->
+  <title>Studyplus — Lernplattform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-          },
-          colors: {
-            canvas: '#111113',
-            sidebar: '#161618',
-            card: '#1A1A1D',
-            cardHover: '#1E1E22',
-            pill: '#242428',
-            borderSubtle: '#242427',
-            borderCard: '#26262A',
-            borderPill: '#343439',
-            accentBlue: '#3B82F6',
-          },
-        },
-      },
-    };
-  </script>
   <style>
     * {
       box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #111113;
+      color: #F4F4F6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #111113;
-      color: #f4f4f6;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow: hidden;
-    }
-
-    /* Custom subtle dark scrollbars */
+    /* Subtle Dark Scrollbars */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -61,85 +32,248 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: #27272b;
-      border-radius: 9999px;
+      background: #27272C;
+      border-radius: 999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #38383f;
+      background: #383840;
     }
 
-    /* Promo card subtle top-left radial illumination matching reference */
-    .promo-card-surface {
-      background:
-        radial-gradient(120% 90% at 22% 8%, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.01) 48%, transparent 75%),
-        #1b1b1e;
-      border: 1px solid #2a2a2f;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
-    }
-
-    /* Upgrade Now button subtle 3D top bevel */
-    .upgrade-btn {
-      background: linear-gradient(180deg, #2d2d32 0%, #26262a 100%);
-      border: 1px solid #38383e;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
-      transition: all 0.16s ease;
-    }
-    .upgrade-btn:hover {
-      background: linear-gradient(180deg, #35353b 0%, #2c2c31 100%);
-      border-color: #46464e;
-    }
-
-    /* Drag and drop visual feedback */
-    .kanban-card {
-      transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
-    }
-    .kanban-card:hover {
-      border-color: #34343a;
-      background-color: #1d1d21;
-    }
-    .kanban-card.dragging {
-      opacity: 0.48;
-      transform: scale(0.98);
-    }
-    .kanban-column.drag-over {
-      background-color: rgba(59, 130, 246, 0.04);
-      border-radius: 14px;
-    }
-
-    /* Segmented vertical ticks matching reference 1:1 */
+    /* 16-Tick Segmented Vertical Progress Bar (1:1 match to screenshot) */
     .tick-bar-container {
       display: inline-flex;
       align-items: center;
       gap: 2.5px;
+      height: 12px;
     }
+
     .tick-segment {
       width: 2.5px;
       height: 11px;
-      border-radius: 1.5px;
+      border-radius: 1px;
       transition: background-color 0.2s ease;
     }
 
-    /* Smooth drawer & modal animations */
+    /* Kanban Card & Drag-and-Drop States */
+    .kanban-card {
+      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+                  border-color 0.18s ease,
+                  background-color 0.18s ease,
+                  box-shadow 0.18s ease;
+    }
+
+    .kanban-card:hover {
+      background-color: #1F1F23;
+      border-color: #323238;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.55);
+    }
+
+    .kanban-card.dragging {
+      opacity: 0.45;
+      transform: scale(0.98);
+    }
+
+    .kanban-column {
+      border-radius: 14px;
+      border: 1px solid transparent;
+    }
+
+    .kanban-column.drag-over {
+      background-color: rgba(59, 130, 246, 0.05);
+      border-color: rgba(59, 130, 246, 0.28);
+    }
+
+    /* Drawer, Modal & Toast Animations */
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-    @keyframes slideInRight {
+
+    @keyframes slideRight {
       from { transform: translateX(100%); }
       to { transform: translateX(0); }
     }
+
     @keyframes scaleIn {
-      from { opacity: 0; transform: scale(0.97) translateY(6px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
+
     .animate-fade-in {
       animation: fadeIn 0.18s ease-out forwards;
     }
+
     .animate-slide-right {
-      animation: slideInRight 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: slideRight 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
     .animate-scale-in {
-      animation: scaleIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Overarching Folder Cards (1:1 visual match to reference image + rich micro-animations) */
+    @keyframes folderSlotReveal {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes ambientGlowBreath {
+      0%, 100% {
+        opacity: 0.82;
+        transform: scale(1) translate(0, 0);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.07) translate(-3px, 2px);
+      }
+    }
+
+    @keyframes starTwinkle {
+      0%, 100% {
+        opacity: 0.34;
+        transform: scale(0.9) rotate(0deg);
+      }
+      50% {
+        opacity: 0.95;
+        transform: scale(1.16) rotate(8deg);
+      }
+    }
+
+    @keyframes starFloatGlint {
+      0%, 100% {
+        opacity: 0.25;
+        transform: translateY(0px) scale(0.95);
+      }
+      50% {
+        opacity: 0.85;
+        transform: translateY(-2.5px) scale(1.2);
+      }
+    }
+
+    .folder-card-slot {
+      perspective: 950px;
+      opacity: 0;
+      animation: folderSlotReveal 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: calc(var(--stagger, 0) * 95ms);
+    }
+
+    .folder-glow-card {
+      position: relative;
+      background-color: #141416;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(0px);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  border-color 0.25s ease,
+                  box-shadow 0.28s ease,
+                  background-color 0.25s ease;
+    }
+
+    .folder-glow-card:hover {
+      background-color: #17171a;
+      border-color: rgba(var(--accent-rgb, 96, 165, 250), 0.45);
+      transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-4px);
+      box-shadow: 0 18px 38px -8px rgba(0, 0, 0, 0.65),
+                  0 0 28px -6px rgba(var(--accent-rgb, 96, 165, 250), 0.22);
+    }
+
+    .folder-glow-card:active {
+      transform: rotateX(0deg) rotateY(0deg) translateY(-1px) scale(0.985);
+      transition-duration: 0.1s;
+    }
+
+    .folder-glow-orb {
+      animation: ambientGlowBreath 6s ease-in-out infinite;
+      transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .folder-glow-card:hover .folder-glow-orb {
+      opacity: 1;
+      transform: scale(1.14) translate(-4px, 3px);
+    }
+
+    .folder-cursor-spotlight {
+      opacity: 0;
+      background: radial-gradient(
+        240px circle at var(--mouse-x, 82%) var(--mouse-y, 18%),
+        rgba(var(--accent-rgb, 96, 165, 250), 0.16),
+        transparent 70%
+      );
+      transition: opacity 0.28s ease;
+    }
+
+    .folder-glow-card:hover .folder-cursor-spotlight {
+      opacity: 1;
+    }
+
+    .folder-edge-shimmer {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(var(--accent-rgb, 255, 255, 255), 0.65) 50%,
+        transparent 100%
+      );
+      opacity: 0;
+      transition: left 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    }
+
+    .folder-glow-card:hover .folder-edge-shimmer {
+      left: 100%;
+      opacity: 1;
+    }
+
+    .folder-icon-wrap {
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), filter 0.28s ease;
+    }
+
+    .folder-glow-card:hover .folder-icon-wrap {
+      transform: translateY(-2px) scale(1.07);
+      filter: drop-shadow(0 0 12px rgba(var(--accent-rgb, 96, 165, 250), 0.55));
+    }
+
+    .sparkle-star-lg {
+      transform-origin: 111px 58px;
+      animation: starTwinkle 3.8s ease-in-out infinite;
+    }
+
+    .sparkle-star-md {
+      transform-origin: 77px 28.2px;
+      animation: starTwinkle 4.4s ease-in-out 1.1s infinite;
+    }
+
+    .sparkle-star-sm {
+      transform-origin: 104px 17.2px;
+      animation: starFloatGlint 3.2s ease-in-out 0.6s infinite;
+    }
+
+    .sparkle-glint-dot {
+      animation: starFloatGlint 4.1s ease-in-out 1.7s infinite;
+    }
+
+    .folder-glow-card:hover .sparkle-star-lg,
+    .folder-glow-card:hover .sparkle-star-md,
+    .folder-glow-card:hover .sparkle-star-sm {
+      animation-duration: 1.9s;
     }
   </style>
 </head>
@@ -170,7 +304,7 @@
           </button>
 
           <!-- User Avatar (30px circular portrait matching reference) -->
-          <button onclick="navigateSection('settings')" title="Profil & Lernziel" class="w-[30px] h-[30px] rounded-full overflow-hidden border border-[#2F2F35] hover:border-[#4A4A52] transition focus:outline-none shrink-0">
+          <button id="sidebar-avatar-btn" onclick="navigateSection('settings')" title="Profilbild &amp; Einstellungen" class="w-[30px] h-[30px] rounded-full overflow-hidden border border-[#2F2F35] hover:border-[#4A4A52] transition focus:outline-none shrink-0">
             <svg viewBox="0 0 40 40" class="w-full h-full">
               <defs>
                 <radialGradient id="userBg" cx="50%" cy="35%" r="65%">
@@ -203,18 +337,6 @@
             <span class="text-[10.5px] text-[#66666E] bg-[#1C1C20] border border-[#28282D] px-1.5 py-0.5 rounded">⌘K</span>
           </button>
 
-          <button onclick="openTemplatesModal()" class="w-full flex items-center gap-3 px-3 py-2 rounded-[8px] text-[13.5px] font-normal text-[#9A9AA0] hover:text-[#F4F4F6] hover:bg-[#1E1E22] transition">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="text-[#8E8E93]">
-              <rect x="3" y="4" width="7" height="7" rx="1.5" />
-              <rect x="3" y="14" width="7" height="6" rx="1.5" />
-              <line x1="14" y1="6" x2="21" y2="6" />
-              <line x1="14" y1="10" x2="21" y2="10" />
-              <line x1="14" y1="15" x2="21" y2="15" />
-              <line x1="14" y1="19" x2="21" y2="19" />
-            </svg>
-            <span>Templates</span>
-          </button>
-
           <button onclick="openNotificationsModal()" class="w-full flex items-center justify-between px-3 py-2 rounded-[8px] text-[13.5px] font-normal text-[#9A9AA0] hover:text-[#F4F4F6] hover:bg-[#1E1E22] transition">
             <span class="flex items-center gap-3">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="text-[#8E8E93]">
@@ -223,7 +345,7 @@
               </svg>
               <span>Notification</span>
             </span>
-            <span id="notif-badge" class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span>
+            <span id="notif-badge" class="w-1.5 h-1.5 rounded-full bg-[#3B82F6] hidden"></span>
           </button>
         </nav>
 
@@ -232,7 +354,8 @@
 
         <!-- Primary Navigation Group -->
         <nav id="main-nav" class="space-y-1">
-          <button data-nav="dashboard" onclick="navigateSection('dashboard')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13.5px] text-[#9A9AA0] hover:text-[#F4F4F6] hover:bg-[#1E1E22] transition">
+          <!-- ACTIVE DEFAULT ITEM: Dashboard -->
+          <button data-nav="dashboard" onclick="navigateSection('dashboard')" class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13.5px] font-medium bg-[#232327] border border-[#323237] text-[#F4F4F6] transition">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="9" />
               <path d="M12 12L15.5 8.5" />
@@ -249,9 +372,8 @@
             <span>Inbox</span>
           </button>
 
-          <!-- ACTIVE DEFAULT ITEM: Project -->
-          <button data-nav="projects" onclick="navigateSection('projects')" class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13.5px] font-medium bg-[#232327] border border-[#323237] text-[#F4F4F6] transition">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" class="text-[#F4F4F6]">
+          <button data-nav="projects" onclick="navigateSection('projects')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13.5px] text-[#9A9AA0] hover:text-[#F4F4F6] hover:bg-[#1E1E22] transition">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 7C3 5.89543 3.89543 5 5 5H9L11 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" />
             </svg>
             <span>Project</span>
@@ -278,15 +400,6 @@
             <span>Reports</span>
           </button>
 
-          <button data-nav="help" onclick="navigateSection('help')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13.5px] text-[#9A9AA0] hover:text-[#F4F4F6] hover:bg-[#1E1E22] transition">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9" />
-              <line x1="12" y1="11" x2="12" y2="16" />
-              <circle cx="12" cy="8" r="0.8" fill="currentColor" />
-            </svg>
-            <span>Help &amp; Center</span>
-          </button>
-
           <button data-nav="settings" onclick="navigateSection('settings')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13.5px] text-[#9A9AA0] hover:text-[#F4F4F6] hover:bg-[#1E1E22] transition">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" />
@@ -295,53 +408,6 @@
             <span>Settings</span>
           </button>
         </nav>
-      </div>
-
-      <!-- Bottom Promo Card: Upgrade to Pro! (1:1 visual replica) -->
-      <div id="promo-card" class="px-4 pb-4 pt-1 shrink-0">
-        <div class="promo-card-surface relative rounded-[14px] p-4 overflow-hidden">
-          <!-- Dismiss X button -->
-          <button onclick="dismissPromoCard()" aria-label="Schließen" class="absolute top-3 right-3 text-[#78787F] hover:text-[#E4E4E7] transition p-1 rounded">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-
-          <!-- Isometric 3D Matte Cube SVG Illustration -->
-          <div class="flex justify-center pt-1 pb-2.5">
-            <svg width="124" height="58" viewBox="0 0 124 58" fill="none">
-              <!-- Subtle perspective grid lines -->
-              <line x1="12" y1="30" x2="112" y2="30" stroke="#2B2B31" stroke-width="0.75" stroke-dasharray="2 2" />
-              <line x1="34" y1="14" x2="88" y2="48" stroke="#2B2B31" stroke-width="0.75" />
-              <line x1="90" y1="14" x2="36" y2="48" stroke="#2B2B31" stroke-width="0.75" />
-              <circle cx="34" cy="30" r="1.3" fill="#3E3E46" />
-              <circle cx="90" cy="30" r="1.3" fill="#3E3E46" />
-              <!-- Cube Drop Shadow -->
-              <polygon points="62,48 42,37 62,28 82,37" fill="rgba(0,0,0,0.45)" />
-              <!-- Isometric Cube Top Face -->
-              <polygon points="62,11 80,21 62,31 44,21" fill="#4B4B52" />
-              <!-- Isometric Cube Left Face -->
-              <polygon points="44,21 62,31 62,49 44,39" fill="#323237" />
-              <!-- Isometric Cube Right Face -->
-              <polygon points="80,21 62,31 62,49 80,39" fill="#252529" />
-              <!-- Crisp Edge Highlights -->
-              <polyline points="44,21 62,31 80,21" stroke="#64646D" stroke-width="0.8" fill="none" />
-              <line x1="62" y1="31" x2="62" y2="49" stroke="#52525A" stroke-width="0.8" />
-            </svg>
-          </div>
-
-          <h4 class="text-[14.5px] font-semibold text-[#F4F4F6] tracking-[-0.01em] mb-1">
-            Upgrade to Pro!
-          </h4>
-          <p class="text-[12px] text-[#8E8E93] leading-[1.45] mb-3.5">
-            Unlock Premium Features and Manage Unlimited projects
-          </p>
-
-          <button onclick="openProModal()" class="upgrade-btn w-full h-[36px] rounded-[8px] text-[13px] font-medium text-[#EFEFF1] flex items-center justify-center">
-            Upgrade Now
-          </button>
-        </div>
       </div>
     </aside>
 
@@ -398,13 +464,37 @@
     // =========================================================================
     // 1. STATE, PERSISTENCE & 3 SUBJECTS (Rechnungswesen, Gesprächsgestaltung, Sozialkunde)
     // =========================================================================
-    const STORAGE_KEY = 'studyplus_v2_state';
+    const STORAGE_KEY = 'studyplus_v3_state';
 
-    const AVATAR_SVGS = [
-      `<svg viewBox="0 0 36 36" class="w-full h-full"><rect width="36" height="36" fill="#2A2624"/><circle cx="18" cy="13.5" r="5.5" fill="#DFB89E"/><path d="M12.5 12C12.5 8.5 15 6.8 18 6.8C21 6.8 23.5 8.5 23.5 12C23.5 10.5 21.3 9.5 18 9.5C14.7 9.5 12.5 10.5 12.5 12Z" fill="#28201C"/><path d="M8 34C9 27.5 13 24 18 24C23 24 27 27.5 28 34" fill="#3B82F6"/></svg>`,
-      `<svg viewBox="0 0 36 36" class="w-full h-full"><rect width="36" height="36" fill="#32353D"/><circle cx="18" cy="13.5" r="5.5" fill="#E8C6B0"/><path d="M12.3 12.5C12.3 8.8 14.8 6.6 18 6.6C21.2 6.6 23.7 8.8 23.7 12.5C23.2 10.2 21.1 9.2 18 9.2C14.9 9.2 12.8 10.2 12.3 12.5Z" fill="#1F1D20"/><path d="M8 34C9 27.5 13 24 18 24C23 24 27 27.5 28 34" fill="#E4E4E7"/></svg>`,
-      `<svg viewBox="0 0 36 36" class="w-full h-full"><rect width="36" height="36" fill="#232B35"/><circle cx="18" cy="13.5" r="5.5" fill="#C99E82"/><path d="M12.5 13C12.5 9 15 6.8 18 6.8C21 6.8 23.5 9 23.5 13" fill="#18181B"/><path d="M8 34C9 27.5 13 24 18 24C23 24 27 27.5 28 34" fill="#10B981"/></svg>`
-    ];
+    const DEFAULT_AVATAR_SVG = `
+      <svg viewBox="0 0 40 40" class="w-full h-full">
+        <defs>
+          <radialGradient id="userBg" cx="50%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#4A4A52" />
+            <stop offset="100%" stop-color="#222226" />
+          </radialGradient>
+        </defs>
+        <rect width="40" height="40" fill="url(#userBg)" />
+        <circle cx="20" cy="15.5" r="6.5" fill="#D6B49C" />
+        <path d="M13.5 14.5C13.5 10.5 16.4 8.2 20 8.2C23.6 8.2 26.5 10.5 26.5 14.5C26.5 12.6 24.2 11.4 20 11.4C15.8 11.4 13.5 12.6 13.5 14.5Z" fill="#231F20" />
+        <path d="M8.5 38C9.8 30.8 14.3 26.5 20 26.5C25.7 26.5 30.2 30.8 31.5 38" fill="#18181B" />
+        <path d="M16.5 26.8L20 31.5L23.5 26.8" fill="#D6B49C" />
+      </svg>
+    `;
+
+    function getUserAvatarMarkup() {
+      if (appState.profileImage) {
+        return `<img src="${appState.profileImage}" alt="Profilbild" class="w-full h-full object-cover" />`;
+      }
+      return DEFAULT_AVATAR_SVG;
+    }
+
+    function updateSidebarAvatar() {
+      const btn = document.getElementById('sidebar-avatar-btn');
+      if (btn) {
+        btn.innerHTML = getUserAvatarMarkup();
+      }
+    }
 
     function getDefaultCourses() {
       return [
@@ -421,9 +511,9 @@
               category: 'Bilanz',
               title: 'Jahresabschluss & Abschreibungen (AfA)',
               lessonsCount: 18,
-              notesCount: 4,
+              notesCount: 2,
               duration: '5 days',
-              completedSteps: 6,
+              completedSteps: 0,
               totalSteps: 20,
               avatars: [0, 1],
               summary: 'Planmäßige lineare Abschreibung (AfA) von abnutzbarem Anlagevermögen, Anschaffungskosten berechnen und zeitanteilige AfA verbuchen.',
@@ -439,8 +529,8 @@
               ],
               codeExample: `Anschaffungskosten (netto): 24.000,00 € | Nutzungsdauer: 6 Jahre\nJährliche AfA = 24.000 € / 6 = 4.000,00 €\nBuchungssatz: 6520 Abschreibungen auf Sachanlagen 4.000 € an 0700 Maschinen 4.000 €`,
               checklist: [
-                { id: 'rw1-1', text: 'Anschaffungskosten inkl. Skonto & Bezugskosten berechnen', done: true },
-                { id: 'rw1-2', text: 'AfA-Tabelle & Nutzungsdauer richtig anwenden', done: true },
+                { id: 'rw1-1', text: 'Anschaffungskosten inkl. Skonto & Bezugskosten berechnen', done: false },
+                { id: 'rw1-2', text: 'AfA-Tabelle & Nutzungsdauer richtig anwenden', done: false },
                 { id: 'rw1-3', text: 'Zeitanteilige Abschreibung (pro rata temporis) üben', done: false },
                 { id: 'rw1-4', text: 'Geringwertige Wirtschaftsgüter (GWG bis 800 € netto) buchen', done: false }
               ],
@@ -451,8 +541,7 @@
                 explanation: 'Richtig! 12.000 € geteilt durch 4 Jahre ergibt 3.000 € jährliche Abschreibung.'
               },
               notes: [
-                { author: 'Marlii', time: 'Vor 1 Tag', text: 'Wichtig: Immer vom Nettobetrag abschreiben, niemals vom Bruttobetrag!' },
-                { author: 'Lukas M.', time: 'Vor 2 Tagen', text: 'Anschaffungsmonat zählt bei zeitanteiliger AfA immer voll mit.' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Wichtig: Immer vom Nettobetrag abschreiben, niemals vom Bruttobetrag!' }
               ]
             },
             {
@@ -462,9 +551,9 @@
               category: 'Steuern',
               title: 'Umsatzsteuer, Vorsteuer & Zahllast',
               lessonsCount: 16,
-              notesCount: 2,
+              notesCount: 1,
               duration: '3 days',
-              completedSteps: 10,
+              completedSteps: 0,
               totalSteps: 20,
               avatars: [0, 2],
               summary: 'Vorsteuer beim Einkauf, Umsatzsteuer beim Verkauf, Verrechnung über das Umsatzsteuer-Verrechnungskonto und Ermittlung der Zahllast.',
@@ -480,9 +569,9 @@
               ],
               codeExample: `Einkauf Rohstoffe (netto 1.000 € + 19% VSt):\n2000 Rohstoffe 1.000 € + 2600 Vorsteuer 190 € an 4400 Verbindlichkeiten 1.190 €`,
               checklist: [
-                { id: 'rw2-1', text: 'Regelsteuersatz (19 %) und ermäßigter Steuersatz (7 %) unterscheiden', done: true },
-                { id: 'rw2-2', text: 'Eingangsrechnungen mit Vorsteuer sicher verbuchen', done: true },
-                { id: 'rw2-3', text: 'Ausgangsrechnungen mit Umsatzsteuer buchen', done: true },
+                { id: 'rw2-1', text: 'Regelsteuersatz (19 %) und ermäßigter Steuersatz (7 %) unterscheiden', done: false },
+                { id: 'rw2-2', text: 'Eingangsrechnungen mit Vorsteuer sicher verbuchen', done: false },
+                { id: 'rw2-3', text: 'Ausgangsrechnungen mit Umsatzsteuer buchen', done: false },
                 { id: 'rw2-4', text: 'Umsatzsteuerzahllast zum Monatsende abschließen', done: false }
               ],
               quiz: {
@@ -492,7 +581,7 @@
                 explanation: 'Genau! Vorsteuer ist ein aktives Bestandskonto (Forderung an das Finanzamt) und mehrt sich im Soll.'
               },
               notes: [
-                { author: 'Marlii', time: 'Vor 3 Tagen', text: 'Eselsbrücke: Vorsteuer = Einkauf (Soll), Umsatzsteuer = Verkauf (Haben).' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Eselsbrücke: Vorsteuer = Einkauf (Soll), Umsatzsteuer = Verkauf (Haben).' }
               ]
             },
 
@@ -504,9 +593,9 @@
               category: 'Buchführung',
               title: 'Bestandskonten & Buchungssätze',
               lessonsCount: 20,
-              notesCount: 5,
+              notesCount: 1,
               duration: '2 days',
-              completedSteps: 14,
+              completedSteps: 0,
               totalSteps: 20,
               avatars: [0, 1],
               summary: 'Aktiv- und Passivkonten aus der Eröffnungsbilanz ableiten, Buchungsregeln (Soll an Haben) anwenden und Konten über SBK abschließen.',
@@ -522,9 +611,9 @@
               ],
               codeExample: `Geschäftsvorfall: Kauf eines Lieferwagens per Banküberweisung (35.000 €)\nSoll: 0840 Fuhrpark 35.000,00 €  an  Haben: 2800 Bank 35.000,00 €`,
               checklist: [
-                { id: 'rw3-1', text: '4 Bilanzveränderungen (Aktiv-/Passivtausch, Mehrung/Minderung) erkennen', done: true },
-                { id: 'rw3-2', text: 'T-Konten über EBK (Eröffnungsbilanzkonto) eröffnen', done: true },
-                { id: 'rw3-3', text: 'Einfache und zusammengesetzte Buchungssätze bilden', done: true },
+                { id: 'rw3-1', text: '4 Bilanzveränderungen (Aktiv-/Passivtausch, Mehrung/Minderung) erkennen', done: false },
+                { id: 'rw3-2', text: 'T-Konten über EBK (Eröffnungsbilanzkonto) eröffnen', done: false },
+                { id: 'rw3-3', text: 'Einfache und zusammengesetzte Buchungssätze bilden', done: false },
                 { id: 'rw3-4', text: 'Schlussbestände ermitteln und über SBK abschließen', done: false }
               ],
               quiz: {
@@ -534,8 +623,7 @@
                 explanation: 'Richtig! Bank (Aktivkonto) nimmt zu und Forderungen (Aktivkonto) nehmen ab → Aktivtausch.'
               },
               notes: [
-                { author: 'Marlii', time: 'Heute', text: '4-Schritte-Methode für Buchungssätze: 1. Welche Konten? 2. Aktiv/Passiv? 3. Mehrung/Minderung? 4. Soll an Haben!' },
-                { author: 'Sara K.', time: 'Gestern', text: 'EBK ist spiegelverkehrt zur Eröffnungsbilanz!' }
+                { author: 'Marlii', time: 'Merkhilfe', text: '4-Schritte-Methode für Buchungssätze: 1. Welche Konten? 2. Aktiv/Passiv? 3. Mehrung/Minderung? 4. Soll an Haben!' }
               ]
             },
             {
@@ -545,9 +633,9 @@
               category: 'Grundlagen',
               title: 'Inventur, Inventar & Bilanzaufbau',
               lessonsCount: 18,
-              notesCount: 3,
+              notesCount: 1,
               duration: '4 days',
-              completedSteps: 16,
+              completedSteps: 0,
               totalSteps: 20,
               avatars: [0, 1],
               summary: 'Körperliche und Buchinventur, Gliederung des Inventars (Vermögen, Schulden, Reinvermögen) und Überführung in die verkürzte Bilanz.',
@@ -563,9 +651,9 @@
               ],
               codeExample: `Aktiva (Mittelverwendung)          | Passiva (Mittelherkunft)\nA. Anlagevermögen (nach Liquidität) | A. Eigenkapital\nB. Umlaufvermögen                   | B. Fremdkapital (nach Fälligkeit)`,
               checklist: [
-                { id: 'rw4-1', text: 'Stichtagsinventur, permanente und verlegte Inventur abgrenzen', done: true },
-                { id: 'rw4-2', text: 'Anlagevermögen und Umlaufvermögen korrekt sortieren', done: true },
-                { id: 'rw4-3', text: 'Reinvermögen (Eigenkapital) aus Inventardaten berechnen', done: true },
+                { id: 'rw4-1', text: 'Stichtagsinventur, permanente und verlegte Inventur abgrenzen', done: false },
+                { id: 'rw4-2', text: 'Anlagevermögen und Umlaufvermögen korrekt sortieren', done: false },
+                { id: 'rw4-3', text: 'Reinvermögen (Eigenkapital) aus Inventardaten berechnen', done: false },
                 { id: 'rw4-4', text: 'Bilanz nach § 266 HGB aufstellen und prüfen', done: false }
               ],
               quiz: {
@@ -575,43 +663,7 @@
                 explanation: 'Korrekt! Oben stehen schwer veräußerbare Güter (Grundstücke, Maschinen), unten flüssige Mittel (Bank, Kasse).'
               },
               notes: [
-                { author: 'Marlii', time: 'Vor 2 Tagen', text: 'Merksatz: Aktiva = Mittelverwendung (Wofür?), Passiva = Mittelherkunft (Woher?).' }
-              ]
-            },
-
-            // DONE
-            {
-              id: 'rw-5',
-              column: 'completed',
-              priority: 'Low',
-              category: 'Theorie',
-              title: 'Grundsätze ordnungsmäßiger Buchführung (GoB)',
-              lessonsCount: 12,
-              notesCount: 2,
-              duration: 'Done',
-              completedSteps: 12,
-              totalSteps: 12,
-              avatars: [0, 2],
-              summary: 'Belegprinzip („Keine Buchung ohne Beleg“), Klarheit und Übersichtlichkeit, Vollständigkeit, Wahrheit und gesetzliche Aufbewahrungsfristen.',
-              theory: [
-                {
-                  heading: '1. Die wichtigsten GoB im Überblick',
-                  body: 'Keine Buchung ohne Beleg! Alle Geschäftsvorfälle müssen zeitnah, lückenlos, wahrheitsgemäß und in einer lebenden Sprache aufgezeichnet werden.'
-                }
-              ],
-              codeExample: `Aufbewahrungsfristen (§ 257 HGB):\n10 Jahre: Handelsbücher, Inventare, Bilanzen, Buchungsbelege\n 6 Jahre: Empfangene und abgesandte Handelsbriefe`,
-              checklist: [
-                { id: 'rw5-1', text: 'Belegprinzip & Belegarten (Eigen-/Fremdbelege) verstanden', done: true },
-                { id: 'rw5-2', text: 'Aufbewahrungsfristen (6 und 10 Jahre) gelernt', done: true }
-              ],
-              quiz: {
-                question: 'Wie lange müssen Buchungsbelege, Bilanzen und Inventare gesetzlich aufbewahrt werden?',
-                options: ['6 Jahre', '10 Jahre', '3 Jahre'],
-                correctIndex: 1,
-                explanation: 'Richtig! Buchungsbelege, Bilanzen und Inventare unterliegen der 10-jährigen Aufbewahrungsfrist.'
-              },
-              notes: [
-                { author: 'Marlii', time: 'Abgeschlossen', text: 'Komplett gelernt und alle Prüfungsfragen sicher beantwortet!' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Merksatz: Aktiva = Mittelverwendung (Wofür?), Passiva = Mittelherkunft (Woher?).' }
               ]
             }
           ]
@@ -629,9 +681,9 @@
               category: 'Praxis',
               title: 'Beschwerdemanagement & Reklamation',
               lessonsCount: 15,
-              notesCount: 3,
+              notesCount: 1,
               duration: '4 days',
-              completedSteps: 4,
+              completedSteps: 0,
               totalSteps: 15,
               avatars: [0, 1],
               summary: 'Deeskalation aufgebrachter Kunden, 5-Phasen-Modell des Beschwerdegesprächs, Empathie zeigen und verbindliche Lösungen anbieten.',
@@ -647,7 +699,7 @@
               ],
               codeExample: `Deeskalations-Formel:\n1. Gefühle anerkennen ("Ich verstehe, dass diese Verzögerung ärgerlich für Sie ist.")\n2. Verantwortung übernehmen ("Ich kümmere mich direkt darum.")\n3. Konkrete Lösung anbieten`,
               checklist: [
-                { id: 'gg1-1', text: 'Unterschied zwischen Reklamation (Rechtsanspruch) und Beschwerde klären', done: true },
+                { id: 'gg1-1', text: 'Unterschied zwischen Reklamation (Rechtsanspruch) und Beschwerde klären', done: false },
                 { id: 'gg1-2', text: 'Deeskalierende Formulierungen einüben', done: false },
                 { id: 'gg1-3', text: 'Rollenspiel: Schwieriges Kundengespräch strukturieren', done: false }
               ],
@@ -662,7 +714,7 @@
                 explanation: 'Richtig! Erst wenn der Gesprächspartner Dampf ablassen konnte und sich ernst genommen fühlt, ist eine sachliche Lösung möglich.'
               },
               notes: [
-                { author: 'Marlii', time: 'Vor 1 Tag', text: 'Beschwerden als Chance zur Kundenbindung sehen!' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Beschwerden als Chance zur Kundenbindung sehen!' }
               ]
             },
             {
@@ -672,9 +724,9 @@
               category: 'Konflikte',
               title: 'Konfliktgespräche & Ich-Botschaften',
               lessonsCount: 14,
-              notesCount: 2,
+              notesCount: 1,
               duration: '6 days',
-              completedSteps: 7,
+              completedSteps: 0,
               totalSteps: 14,
               avatars: [1, 2],
               summary: 'Gewaltfreie Kommunikation (GFK nach Rosenberg), Du-Vorwürfe in konstruktive Ich-Botschaften umwandeln und Win-Win-Lösungen finden.',
@@ -686,8 +738,8 @@
               ],
               codeExample: `Du-Botschaft (falsch): "Du unterbrichst mich ständig in Meetings!"\nIch-Botschaft (richtig): "Wenn ich meinen Gedanken nicht zu Ende führen kann, fühle ich mich übergangen. Ich wünsche mir, dass wir uns gegenseitig ausreden lassen."`,
               checklist: [
-                { id: 'gg2-1', text: 'Du-Botschaften erkennen und umformulieren', done: true },
-                { id: 'gg2-2', text: '4 Schritte der Gewaltfreien Kommunikation anwenden', done: true },
+                { id: 'gg2-1', text: 'Du-Botschaften erkennen und umformulieren', done: false },
+                { id: 'gg2-2', text: '4 Schritte der Gewaltfreien Kommunikation anwenden', done: false },
                 { id: 'gg2-3', text: 'Konflikt-Eskalationsstufen nach Glasl kennen', done: false }
               ],
               quiz: {
@@ -697,7 +749,7 @@
                 explanation: 'Genau! Schuldzuweisungen lösen Abwehrreaktionen aus; Ich-Botschaften beschreiben Beobachtung, Gefühl, Bedürfnis und Bitte.'
               },
               notes: [
-                { author: 'Marlii', time: 'Vor 2 Tagen', text: 'Wörter wie „immer“ und „nie“ in Konfliktgesprächen streichen.' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Wörter wie „immer“ und „nie“ in Konfliktgesprächen streichen.' }
               ]
             },
 
@@ -709,9 +761,9 @@
               category: 'Theorie',
               title: '4-Ohren-Modell (Schulz von Thun)',
               lessonsCount: 20,
-              notesCount: 4,
+              notesCount: 1,
               duration: '2 days',
-              completedSteps: 15,
+              completedSteps: 0,
               totalSteps: 20,
               avatars: [0, 1],
               summary: 'Das Kommunikationsquadrat: Sachebene, Selbstoffenbarung, Beziehungsebene und Appellseite bei Sender und Empfänger analysieren.',
@@ -727,9 +779,9 @@
               ],
               codeExample: `Beispiel: "Die Ampel ist grün!"\n• Sachohr: Die Ampel zeigt grünes Licht.\n• Selbstoffenbarung: Ich habe es eilig / bin ungeduldig.\n• Beziehungsohr: Du brauchst meine Hilfe beim Fahren.\n• Appellohr: Gib Gas und fahr los!`,
               checklist: [
-                { id: 'gg3-1', text: 'Alle 4 Seiten des Kommunikationsquadrats definieren', done: true },
-                { id: 'gg3-2', text: 'Alltagsbeispiele auf alle 4 Schnäbel & Ohren untersuchen', done: true },
-                { id: 'gg3-3', text: 'Metakommunikation zur Klärung von Störungen einsetzen', done: true },
+                { id: 'gg3-1', text: 'Alle 4 Seiten des Kommunikationsquadrats definieren', done: false },
+                { id: 'gg3-2', text: 'Alltagsbeispiele auf alle 4 Schnäbel & Ohren untersuchen', done: false },
+                { id: 'gg3-3', text: 'Metakommunikation zur Klärung von Störungen einsetzen', done: false },
                 { id: 'gg3-4', text: 'Übungsklausur: Dialoganalyse nach Schulz von Thun', done: false }
               ],
               quiz: {
@@ -739,8 +791,7 @@
                 explanation: 'Richtig! Die Beziehungsebene wird oft über Tonfall, Mimik und Gestik vermittelt.'
               },
               notes: [
-                { author: 'Marlii', time: 'Heute', text: 'Kommt garantiert in der Klassenarbeit dran: Beispielsatz in alle 4 Ebenen zerlegen!' },
-                { author: 'Sara K.', time: 'Gestern', text: 'Auch Paul Watzlawick („Man kann nicht nicht kommunizieren“) kurz wiederholen.' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Beispielsatz in alle 4 Ebenen zerlegen und Paul Watzlawick kurz wiederholen.' }
               ]
             },
             {
@@ -750,9 +801,9 @@
               category: 'Rhetorik',
               title: 'Aktives Zuhören & Fragetechniken',
               lessonsCount: 16,
-              notesCount: 3,
+              notesCount: 1,
               duration: '3 days',
-              completedSteps: 12,
+              completedSteps: 0,
               totalSteps: 16,
               avatars: [0, 2],
               summary: 'Paraphrasieren, Verbalisieren emotionaler Inhalte, offene W-Fragen, geschlossene Fragen, Alternativfragen und Suggestivfragen vermeiden.',
@@ -768,8 +819,8 @@
               ],
               codeExample: `Paraphrasieren: "Wenn ich Sie richtig verstanden habe, benötigen Sie die Lieferung spätestens bis Freitag?"\nOffene Frage: "Welche Anforderungen sind Ihnen bei dem Projekt besonders wichtig?"`,
               checklist: [
-                { id: 'gg4-1', text: 'Paraphrasieren und Verbalisieren sicher unterscheiden', done: true },
-                { id: 'gg4-2', text: 'Offene, geschlossene und Alternativfragen formulieren', done: true },
+                { id: 'gg4-1', text: 'Paraphrasieren und Verbalisieren sicher unterscheiden', done: false },
+                { id: 'gg4-2', text: 'Offene, geschlossene und Alternativfragen formulieren', done: false },
                 { id: 'gg4-3', text: 'Manipulative Suggestivfragen erkennen und vermeiden', done: false }
               ],
               quiz: {
@@ -783,43 +834,7 @@
                 explanation: 'Perfekt! Durch Paraphrasieren prüft man, ob man alles richtig verstanden hat, und zeigt echte Aufmerksamkeit.'
               },
               notes: [
-                { author: 'Marlii', time: 'Vor 2 Tagen', text: 'Wer fragt, der führt – offene Fragen in der Informationsphase, geschlossene zum Abschluss!' }
-              ]
-            },
-
-            // DONE
-            {
-              id: 'gg-5',
-              column: 'completed',
-              priority: 'Low',
-              category: 'Grundlagen',
-              title: 'Sender-Empfänger-Modell & Störungen',
-              lessonsCount: 10,
-              notesCount: 1,
-              duration: 'Done',
-              completedSteps: 10,
-              totalSteps: 10,
-              avatars: [0, 1],
-              summary: 'Klassisches Sender-Empfänger-Modell (Shannon & Weaver), Kodierung, Dekodierung, Kanal, Feedback-Schleife und Störquellen.',
-              theory: [
-                {
-                  heading: '1. Ablauf der Nachrichtenübermittlung',
-                  body: 'Der Sender kodiert einen Gedanken in Zeichen (Sprache, Schrift, Mimik), sendet sie über einen Kanal und der Empfänger dekodiert sie. Feedback schließt den Kreislauf.'
-                }
-              ],
-              codeExample: `Sender → [Kodierung] → Kanal / Medium → [Dekodierung] → Empfänger\n              ↑______________ Feedback ______________|`,
-              checklist: [
-                { id: 'gg5-1', text: 'Begriffe Kodierung, Dekodierung und Redundanz erklären', done: true },
-                { id: 'gg5-2', text: 'Verbale, paraverbale und nonverbale Signale unterscheiden', done: true }
-              ],
-              quiz: {
-                question: 'Wozu gehören Tonfall, Sprechtempo, Lautstärke und Sprechpausen?',
-                options: ['Verbale Kommunikation', 'Paraverbale Kommunikation', 'Nonverbale Kommunikation'],
-                correctIndex: 1,
-                explanation: 'Richtig! Paraverbale Merkmale betreffen alles rund um die Stimme (wie etwas gesagt wird).'
-              },
-              notes: [
-                { author: 'Marlii', time: 'Abgeschlossen', text: 'Grundlagen sitzen zu 100 %.' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Wer fragt, der führt – offene Fragen in der Informationsphase, geschlossene zum Abschluss!' }
               ]
             }
           ]
@@ -837,9 +852,9 @@
               category: 'Arbeitsrecht',
               title: 'Tarifautonomie, Streik & Betriebsrat',
               lessonsCount: 18,
-              notesCount: 3,
+              notesCount: 1,
               duration: '5 days',
-              completedSteps: 5,
+              completedSteps: 0,
               totalSteps: 18,
               avatars: [0, 1],
               summary: 'Tarifvertragsparteien (Gewerkschaften & Arbeitgeberverbände), Friedenspflicht, Ablauf eines Arbeitskampfes und Mitbestimmung des Betriebsrats.',
@@ -855,7 +870,7 @@
               ],
               codeExample: `Normenpyramide im Arbeitsrecht:\n1. Grundgesetz & EU-Recht\n2. Gesetze (z. B. BBiG, ArbZG, BUrlG)\n3. Tarifvertrag (Flächen- oder Haustarif)\n4. Betriebsvereinbarung\n5. Einzelarbeitsvertrag (Günstigkeitsprinzip!)`,
               checklist: [
-                { id: 'sk1-1', text: 'Tarifautonomie und Günstigkeitsprinzip erklären', done: true },
+                { id: 'sk1-1', text: 'Tarifautonomie und Günstigkeitsprinzip erklären', done: false },
                 { id: 'sk1-2', text: 'Manteltarifvertrag vs. Lohn-/Gehaltstarifvertrag abgrenzen', done: false },
                 { id: 'sk1-3', text: 'Rechte des Betriebsrats und der JAV (Jugend- und Auszubildendenvertretung)', done: false }
               ],
@@ -866,7 +881,7 @@
                 explanation: 'Richtig! Für einen regulären Arbeitskampf (Streik) sind in der Urabstimmung mindestens 75 % Zustimmung erforderlich.'
               },
               notes: [
-                { author: 'Marlii', time: 'Vor 1 Tag', text: 'Wichtig: Während der Laufzeit eines Tarifvertrags herrscht Friedenspflicht!' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Wichtig: Während der Laufzeit eines Tarifvertrags herrscht Friedenspflicht!' }
               ]
             },
             {
@@ -876,9 +891,9 @@
               category: 'Sozialstaat',
               title: 'Sozialversicherungen & Solidarprinzip',
               lessonsCount: 16,
-              notesCount: 2,
+              notesCount: 1,
               duration: '7 days',
-              completedSteps: 8,
+              completedSteps: 0,
               totalSteps: 16,
               avatars: [0, 2],
               summary: 'Die 5 Säulen der gesetzlichen Sozialversicherung (KV, RV, AV, PV, UV), Beitragsfinanzierung und Solidaritäts- vs. Äquivalenzprinzip.',
@@ -890,8 +905,8 @@
               ],
               codeExample: `Die 5 Säulen (Merkwort: KRAPU):\nK - Krankenversicherung (paritätisch)\nR - Rentenversicherung (paritätisch)\nA - Arbeitslosenversicherung (paritätisch)\nP - Pflegeversicherung (paritätisch)\nU - Unfallversicherung (100 % Arbeitgeber!)`,
               checklist: [
-                { id: 'sk2-1', text: 'Alle 5 Zweige der Sozialversicherung und ihre Träger benennen', done: true },
-                { id: 'sk2-2', text: 'Solidarprinzip, Subsidiaritätsprinzip und Generationenvertrag erklären', done: true },
+                { id: 'sk2-1', text: 'Alle 5 Zweige der Sozialversicherung und ihre Träger benennen', done: false },
+                { id: 'sk2-2', text: 'Solidarprinzip, Subsidiaritätsprinzip und Generationenvertrag erklären', done: false },
                 { id: 'sk2-3', text: 'Wegeunfall vs. Arbeitsunfall in der Unfallversicherung prüfen', done: false }
               ],
               quiz: {
@@ -901,7 +916,7 @@
                 explanation: 'Genau! Die gesetzliche Unfallversicherung (Träger: Berufsgenossenschaften) trägt der Arbeitgeber allein.'
               },
               notes: [
-                { author: 'Marlii', time: 'Vor 4 Tagen', text: 'Auch der direkte Weg zur Berufsschule und zurück ist über die Unfallversicherung geschützt!' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Auch der direkte Weg zur Berufsschule und zurück ist über die Unfallversicherung geschützt!' }
               ]
             },
 
@@ -913,9 +928,9 @@
               category: 'Recht',
               title: 'Arbeitsvertrag & Kündigungsschutz',
               lessonsCount: 20,
-              notesCount: 4,
+              notesCount: 1,
               duration: '2 days',
-              completedSteps: 14,
+              completedSteps: 0,
               totalSteps: 20,
               avatars: [0, 1],
               summary: 'Pflichten aus dem Arbeitsvertrag, ordentliche vs. außerordentliche (fristlose) Kündigung, Kündigungsfristen (§ 622 BGB) und besonderer Kündigungsschutz.',
@@ -931,9 +946,9 @@
               ],
               codeExample: `Formvorschrift (§ 623 BGB):\nJede Kündigung eines Arbeits- oder Ausbildungsverhältnisses bedarf zwingend der SCHRIFTFORM (eigenhändige Unterschrift). E-Mail, WhatsApp oder mündlich sind unwirksam!`,
               checklist: [
-                { id: 'sk3-1', text: 'Haupt- und Nebenpflichten von Arbeitnehmer & Arbeitgeber', done: true },
-                { id: 'sk3-2', text: 'Schriftformerfordernis (§ 623 BGB) & Kündigungsfristen anwenden', done: true },
-                { id: 'sk3-3', text: 'Personen-, verhaltens- und betriebsbedingte Kündigung unterscheiden', done: true },
+                { id: 'sk3-1', text: 'Haupt- und Nebenpflichten von Arbeitnehmer & Arbeitgeber', done: false },
+                { id: 'sk3-2', text: 'Schriftformerfordernis (§ 623 BGB) & Kündigungsfristen anwenden', done: false },
+                { id: 'sk3-3', text: 'Personen-, verhaltens- und betriebsbedingte Kündigung unterscheiden', done: false },
                 { id: 'sk3-4', text: 'Fallbeispiele zum Kündigungsschutzgesetz (KSchG) lösen', done: false }
               ],
               quiz: {
@@ -947,7 +962,7 @@
                 explanation: 'Richtig! Nach § 623 BGB ist die elektronische Form ausgeschlossen – eine Kündigung per E-Mail ist nichtig.'
               },
               notes: [
-                { author: 'Marlii', time: 'Heute', text: 'Unbedingt § 623 BGB (Schriftform) und § 626 BGB (2-Wochen-Frist bei fristloser Kündigung) merken!' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Unbedingt § 623 BGB (Schriftform) und § 626 BGB (2-Wochen-Frist bei fristloser Kündigung) merken!' }
               ]
             },
             {
@@ -957,9 +972,9 @@
               category: 'Ausbildung',
               title: 'Duales Ausbildungssystem & BBiG',
               lessonsCount: 15,
-              notesCount: 3,
+              notesCount: 1,
               duration: '3 days',
-              completedSteps: 11,
+              completedSteps: 0,
               totalSteps: 15,
               avatars: [0, 1],
               summary: 'Lernorte Betrieb und Berufsschule, Inhalte des Berufsausbildungsvertrags, Probezeit (1–4 Monate), Vergütung und Rechte/Pflichten der Azubis.',
@@ -971,8 +986,8 @@
               ],
               codeExample: `Kündigung nach der Probezeit (§ 22 BBiG):\n• Ausbildender (Betrieb): Nur außerordentlich aus wichtigem Grund!\n• Auszubildender: Außerordentlich ODER ordentlich mit 4 Wochen Frist bei Aufgabe/Wechsel der Berufsausbildung.`,
               checklist: [
-                { id: 'sk4-1', text: 'Mindestinhalte eines Ausbildungsvertrags (§ 11 BBiG) kennen', done: true },
-                { id: 'sk4-2', text: 'Probezeitregelungen und Kündigungsmöglichkeiten nach BBiG', done: true },
+                { id: 'sk4-1', text: 'Mindestinhalte eines Ausbildungsvertrags (§ 11 BBiG) kennen', done: false },
+                { id: 'sk4-2', text: 'Probezeitregelungen und Kündigungsmöglichkeiten nach BBiG', done: false },
                 { id: 'sk4-3', text: 'Jugendarbeitsschutzgesetz (JArbSchG) für minderjährige Azubis', done: false }
               ],
               quiz: {
@@ -982,47 +997,7 @@
                 explanation: 'Korrekt! Nach § 20 BBiG beträgt die Probezeit mindestens einen Monat und höchstens vier Monate.'
               },
               notes: [
-                { author: 'Marlii', time: 'Gestern', text: 'Ausbildungsnachweis (Berichtsheft) ist Zulassungsvoraussetzung zur Abschlussprüfung!' }
-              ]
-            },
-
-            // DONE
-            {
-              id: 'sk-5',
-              column: 'completed',
-              priority: 'Low',
-              category: 'Wirtschaft',
-              title: 'Wirtschaftskreislauf & Soziale Marktwirtschaft',
-              lessonsCount: 14,
-              notesCount: 2,
-              duration: 'Done',
-              completedSteps: 14,
-              totalSteps: 14,
-              avatars: [0, 2],
-              summary: 'Einfacher und erweiterter Wirtschaftskreislauf (Haushalte, Unternehmen, Staat, Banken, Ausland) sowie Prinzipien der Sozialen Marktwirtschaft.',
-              theory: [
-                {
-                  heading: '1. Grundidee der Sozialen Marktwirtschaft',
-                  body: 'Verbindung von wirtschaftlicher Freiheit (Wettbewerb, freie Preisbildung, Privateigentum) mit sozialem Ausgleich (Sozialversicherungen, Arbeitsrecht, Kartellamt).'
-                }
-              ],
-              codeExample: `Güter- und Geldströme:\nPrivate Haushalte → Arbeitskraft → Unternehmen\nUnternehmen → Lohn / Gehalt → Private Haushalte`,
-              checklist: [
-                { id: 'sk5-1', text: 'Güterströme und Geldströme im erweiterten Wirtschaftskreislauf', done: true },
-                { id: 'sk5-2', text: 'Aufgaben des Staates in der Sozialen Marktwirtschaft', done: true }
-              ],
-              quiz: {
-                question: 'Welches Ziel verfolgt die Soziale Marktwirtschaft?',
-                options: [
-                  'Staatliche Planvorgaben für alle Preise',
-                  'Freier Wettbewerb verbunden mit sozialem Ausgleich',
-                  'Abschaffung von Privateigentum'
-                ],
-                correctIndex: 1,
-                explanation: 'Richtig! Die Soziale Marktwirtschaft kombiniert Marktprinzipien mit sozialer Absicherung.'
-              },
-              notes: [
-                { author: 'Marlii', time: 'Abgeschlossen', text: 'Wirtschaftskreislauf komplett verinnerlicht.' }
+                { author: 'Marlii', time: 'Merkhilfe', text: 'Ausbildungsnachweis (Berichtsheft) ist Zulassungsvoraussetzung zur Abschlussprüfung!' }
               ]
             }
           ]
@@ -1031,32 +1006,7 @@
     }
 
     function getDefaultExams() {
-      return [
-        {
-          id: 'exam-1',
-          date: '2026-11-24',
-          subject: 'Rechnungswesen',
-          type: 'Klassenarbeit',
-          title: 'Klassenarbeit: Bestandskonten, Buchungssätze & USt',
-          topics: '• Inventur, Inventar & Bilanzaufbau (Aktiva/Passiva)\n• Aktiv- und Passivkonten eröffnen (EBK) und abschließen (SBK)\n• Einfache & zusammengesetzte Buchungssätze (Soll an Haben)\n• Vorsteuer, Umsatzsteuer & Berechnung der Zahllast'
-        },
-        {
-          id: 'exam-2',
-          date: '2026-11-27',
-          subject: 'Gesprächsgestaltung',
-          type: 'Kurztest',
-          title: 'Test: 4-Ohren-Modell & Aktives Zuhören',
-          topics: '• Kommunikationsquadrat nach Friedemann Schulz von Thun (alle 4 Ebenen analysieren)\n• Paraphrasieren & Verbalisieren beim Aktiven Zuhören\n• Offene, geschlossene und Alternativfragen formulieren\n• Ich-Botschaften statt Du-Vorwürfe'
-        },
-        {
-          id: 'exam-3',
-          date: '2026-12-03',
-          subject: 'Sozialkunde',
-          type: 'Klassenarbeit',
-          title: 'Klassenarbeit: Arbeitsrecht, BBiG & Sozialversicherung',
-          topics: '• Duales Ausbildungssystem, Probezeit & Kündigung nach BBiG\n• Ordentliche vs. außerordentliche Kündigung (§§ 622, 623, 626 BGB)\n• Tarifautonomie, Günstigkeitsprinzip & Ablauf eines Streiks\n• Die 5 Säulen der Sozialversicherung (Finanzierung & Solidarprinzip)'
-        }
-      ];
+      return [];
     }
 
     function getDefaultFlashcards() {
@@ -1087,7 +1037,7 @@
           subject: 'Rechnungswesen',
           question: 'Wie berechnet sich das Reinvermögen (Eigenkapital) im Inventar?',
           answer: 'Reinvermögen = Summe des Vermögens (Anlage- + Umlaufvermögen) minus Summe der Schulden.',
-          mastered: true
+          mastered: false
         },
         {
           id: 'fc-5',
@@ -1099,102 +1049,29 @@
       ];
     }
 
-    const STUDY_TEMPLATES = [
-      {
-        id: 'tpl-1',
-        courseId: 'rechnungswesen',
-        title: 'T-Konto & Buchungssatz-Schema',
-        category: 'Buchführung',
-        priority: 'High',
-        duration: '3 days',
-        totalSteps: 12,
-        desc: 'Schritt-für-Schritt-Vorlage zum sicheren Bilden von Buchungssätzen und Abschließen über EBK & SBK.',
-        checklist: [
-          '1. Betroffene Konten im Kontenrahmen heraussuchen',
-          '2. Kontenart bestimmen (Aktivkonto oder Passivkonto)',
-          '3. Mehrung oder Minderung prüfen',
-          '4. Buchungssatz „Soll an Haben“ aufstellen und Beträge kontrollieren'
-        ]
-      },
-      {
-        id: 'tpl-2',
-        courseId: 'gespraechsgestaltung',
-        title: '4-Ohren-Analyse Raster (Schulz von Thun)',
-        category: 'Theorie',
-        priority: 'High',
-        duration: '2 days',
-        totalSteps: 10,
-        desc: 'Strukturierte Analysevorlage für Dialoge in Klassenarbeiten (Sender-Schnäbel & Empfänger-Ohren).',
-        checklist: [
-          'Sachinhalt: Welche reinen Fakten werden genannt?',
-          'Selbstkundgabe: Was verrät der Sender über seine Gefühle/Werte?',
-          'Beziehung: Wie behandelt der Sender den Empfänger?',
-          'Appell: Was soll der Empfänger denken, fühlen oder tun?'
-        ]
-      },
-      {
-        id: 'tpl-3',
-        courseId: 'sozialkunde',
-        title: 'Falllösungs-Schema Arbeitsrecht & Kündigung',
-        category: 'Recht',
-        priority: 'High',
-        duration: '4 days',
-        totalSteps: 14,
-        desc: 'Prüfungsschema für Rechtsfälle zu Kündigungsfristen, Schriftform (§ 623 BGB) und Kündigungsschutz.',
-        checklist: [
-          '1. Formwirksamkeit prüfen: Liegt echte Schriftform (§ 623 BGB) vor?',
-          '2. Kündigungsart bestimmen: Ordentlich (§ 622 BGB) oder außerordentlich (§ 626 BGB)?',
-          '3. Besonderen Kündigungsschutz prüfen (Azubi nach Probezeit, Schwangere, Betriebsrat)',
-          '4. Rechtsfolge und Fristen formulieren'
-        ]
-      },
-      {
-        id: 'tpl-4',
-        courseId: 'rechnungswesen',
-        title: '7-Tage Klassenarbeits-Lernplan',
-        category: 'Planung',
-        priority: 'Medium',
-        duration: '7 days',
-        totalSteps: 14,
-        desc: 'Strukturierter Countdown für die nächste Klassenarbeit mit Wiederholung, Übungsaufgaben und Selbsttest.',
-        checklist: [
-          'Tag 1–2: Zusammenfassung & Grundbegriffe strukturieren',
-          'Tag 3–4: Übungsaufgaben ohne Lösungen durchrechnen',
-          'Tag 5–6: Typische Fehlerquellen & Merkzettel wiederholen',
-          'Tag 7: Probeklausur unter Zeitbedingungen lösen'
-        ]
-      }
-    ];
-
     let COURSES = getDefaultCourses();
 
     let appState = {
       userName: 'Marlii',
-      activeNav: 'projects',       // 'dashboard' | 'inbox' | 'projects' | 'calendar' | 'reports' | 'help' | 'settings'
+      profileImage: null,
+      activeNav: 'dashboard',      // 'dashboard' | 'inbox' | 'projects' | 'calendar' | 'reports' | 'settings'
       activeCourseId: 'rechnungswesen', // 'rechnungswesen' | 'gespraechsgestaltung' | 'sozialkunde'
-      showSubjectOverview: false,  // true when user clicks "← Project"
+      showSubjectOverview: true,   // starts on overarching folders view; false inside a specific folder
       activeViewTab: 'kanban',     // 'kanban' | 'list' | 'timeline' | 'table'
       selectedCardId: null,
       draggedCardId: null,
       quizAnswers: {},
       dailyGoal: 6,
-      completedToday: 4,
+      completedToday: 0,
       calendarMonth: 10,           // 0-indexed (10 = November)
       calendarYear: 2026,
-      selectedExamId: 'exam-1',
+      selectedExamId: null,
       exams: getDefaultExams(),
-      quickNotes: [
-        { id: 'qn-1', subject: 'Rechnungswesen', text: 'Skonto beim Einkauf mindert die Anschaffungskosten und korrigiert die Vorsteuer!', time: 'Heute' },
-        { id: 'qn-2', subject: 'Gesprächsgestaltung', text: 'Unterschied Reklamation (gesetzlicher Gewährleistungsanspruch) vs. Beschwerde wiederholen.', time: 'Gestern' }
-      ],
+      quickNotes: [],
       flashcards: getDefaultFlashcards(),
       activeFlashcardIndex: 0,
       flashcardFlipped: false,
-      notifications: [
-        { id: 'n1', title: 'Klassenarbeit in 7 Tagen', desc: 'Rechnungswesen: Bestandskonten, Buchungssätze & USt (24.11.2026)', time: 'Heute', unread: true },
-        { id: 'n2', title: 'Lernserie: 7 Tage aktiv!', desc: 'Du hast diese Woche bereits 46 Lektionen erfolgreich abgeschlossen.', time: 'Gestern', unread: true },
-        { id: 'n3', title: 'Modul abgeschlossen', desc: '„Grundsätze ordnungsmäßiger Buchführung (GoB)“ (12/12) erledigt.', time: 'Vor 2 Tagen', unread: false }
-      ]
+      notifications: []
     };
 
     function loadPersistedState() {
@@ -1209,6 +1086,7 @@
           appState = {
             ...appState,
             ...parsed.appState,
+            activeNav: 'dashboard',
             selectedCardId: null,
             draggedCardId: null
           };
@@ -1224,6 +1102,7 @@
           courses: COURSES,
           appState: {
             userName: appState.userName,
+            profileImage: appState.profileImage,
             activeCourseId: appState.activeCourseId,
             activeViewTab: appState.activeViewTab,
             quizAnswers: appState.quizAnswers,
@@ -1311,18 +1190,6 @@
       return ticksHtml;
     }
 
-    function renderAvatarPair(avatarIndices = [0, 1]) {
-      return `
-        <div class="flex items-center -space-x-1.5 shrink-0">
-          ${avatarIndices.map(idx => `
-            <div class="w-[22px] h-[22px] rounded-full overflow-hidden ring-2 ring-[#1A1A1D] bg-[#26262B]">
-              ${AVATAR_SVGS[idx % AVATAR_SVGS.length]}
-            </div>
-          `).join('')}
-        </div>
-      `;
-    }
-
     function renderKanbanCard(card) {
       return `
         <article
@@ -1381,16 +1248,13 @@
           <!-- Horizontal Card Divider -->
           <div class="h-px bg-[#232327] my-3.5"></div>
 
-          <!-- Row 4: Segmented Vertical Tick Bar + Ratio + Peer Avatars -->
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2.5">
-              ${renderSegmentedTicks(card.completedSteps, card.totalSteps)}
-              <span class="text-[12px] tracking-tight">
-                <span class="font-semibold text-[#E4E4E7]">${card.completedSteps}</span>
-                <span class="text-[#78787F]"> / ${card.totalSteps}</span>
-              </span>
-            </div>
-            ${renderAvatarPair(card.avatars)}
+          <!-- Row 4: Segmented Vertical Tick Bar + Ratio -->
+          <div class="flex items-center gap-2.5">
+            ${renderSegmentedTicks(card.completedSteps, card.totalSteps)}
+            <span class="text-[12px] tracking-tight">
+              <span class="font-semibold text-[#E4E4E7]">${card.completedSteps}</span>
+              <span class="text-[#78787F]"> / ${card.totalSteps}</span>
+            </span>
           </div>
         </article>
       `;
@@ -1416,56 +1280,141 @@
         container.innerHTML = renderCalendarView();
       } else if (appState.activeNav === 'reports') {
         container.innerHTML = renderReportsView();
-      } else if (appState.activeNav === 'help') {
-        container.innerHTML = renderHelpView();
       } else if (appState.activeNav === 'settings') {
         container.innerHTML = renderSettingsView();
       }
     }
 
     function renderSubjectsOverview() {
+      const folderThemes = {
+        rechnungswesen: {
+          accentColor: '#5294FF',
+          accentRgb: '82, 148, 255',
+          glowGradient: 'radial-gradient(88% 82% at 92% 6%, rgba(59, 130, 246, 0.48) 0%, rgba(37, 99, 235, 0.17) 44%, rgba(20, 20, 22, 0) 78%)',
+          borderGlow: 'rgba(96, 165, 250, 0.24)',
+          iconSvg: `
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5294FF" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6" cy="6" r="2" />
+              <circle cx="6" cy="12" r="2" />
+              <circle cx="6" cy="18" r="2" />
+              <path d="M8 6H15L17 8V10" />
+              <path d="M8 12H19" />
+              <path d="M8 18H15L17 16V14" />
+            </svg>
+          `
+        },
+        gespraechsgestaltung: {
+          accentColor: '#E88D56',
+          accentRgb: '232, 141, 86',
+          glowGradient: 'radial-gradient(88% 82% at 92% 6%, rgba(234, 136, 68, 0.48) 0%, rgba(194, 95, 38, 0.17) 44%, rgba(20, 20, 22, 0) 78%)',
+          borderGlow: 'rgba(251, 146, 60, 0.24)',
+          iconSvg: `
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#E88D56" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+              <line x1="9" y1="10" x2="15" y2="10" />
+              <line x1="9" y1="14" x2="13" y2="14" />
+            </svg>
+          `
+        },
+        sozialkunde: {
+          accentColor: '#9D75FA',
+          accentRgb: '157, 117, 250',
+          glowGradient: 'radial-gradient(88% 82% at 92% 6%, rgba(139, 92, 246, 0.5) 0%, rgba(109, 40, 217, 0.18) 44%, rgba(20, 20, 22, 0) 78%)',
+          borderGlow: 'rgba(167, 139, 250, 0.24)',
+          iconSvg: `
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9D75FA" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="3" />
+              <circle cx="8.5" cy="9.5" r="1.5" />
+              <path d="M21 15l-4.5-4.5L7 20" />
+              <path d="M16 4v3M14.5 5.5h3" />
+            </svg>
+          `
+        }
+      };
+
+      const sparklesOverlaySvg = `
+        <svg width="136" height="106" viewBox="0 0 136 106" fill="none" class="absolute top-0 right-0 pointer-events-none select-none">
+          <!-- Large 4-point star (right-center of glow) -->
+          <path class="sparkle-star-lg" d="M111 49C111.7 55.6 113.4 57.3 120 58C113.4 58.7 111.7 60.4 111 67C110.3 60.4 108.6 58.7 102 58C108.6 57.3 110.3 55.6 111 49Z" fill="white" fill-opacity="0.52" />
+          <!-- Medium 4-point star (upper-left of main star) -->
+          <path class="sparkle-star-md" d="M77 23C77.4 26.8 78.4 27.8 82.2 28.2C78.4 28.6 77.4 29.6 77 33.4C76.6 29.6 75.6 28.6 71.8 28.2C75.6 27.8 76.6 26.8 77 23Z" fill="white" fill-opacity="0.38" />
+          <!-- Small 4-point sparkle top-right -->
+          <path class="sparkle-star-sm" d="M104 14C104.25 16.3 104.9 16.95 107.2 17.2C104.9 17.45 104.25 18.1 104 20.4C103.75 18.1 103.1 17.45 100.8 17.2C103.1 16.95 103.75 16.3 104 14Z" fill="white" fill-opacity="0.32" />
+          <!-- Tiny glints -->
+          <circle class="sparkle-glint-dot" cx="52" cy="18" r="1.15" fill="white" fill-opacity="0.36" />
+          <circle class="sparkle-glint-dot" cx="94" cy="39" r="1.05" fill="white" fill-opacity="0.28" />
+        </svg>
+      `;
+
       return `
-        <div class="flex-1 overflow-y-auto px-6 sm:px-9 py-7">
-          <div class="mb-6">
-            <p class="text-[13px] text-[#8E8E93] mb-1">Alle Lernfächer im Überblick</p>
-            <h1 class="text-[26px] font-bold text-[#F4F4F6] tracking-[-0.02em]">Deine 3 Lernprojekte</h1>
-          </div>
+        <div class="flex-1 overflow-y-auto px-6 sm:px-9 py-8">
+          <div class="max-w-[1060px]">
+            <!-- Header -->
+            <div class="mb-7">
+              <p class="text-[13px] text-[#7E7E87] mb-1.5">Wähle einen übergeordneten Lernordner aus</p>
+              <h1 class="text-[26px] font-bold text-[#F4F4F6] tracking-[-0.02em]">Project</h1>
+            </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl">
-            ${COURSES.map(c => {
-              const doneSteps = c.cards.reduce((sum, item) => sum + item.completedSteps, 0);
-              const allSteps = c.cards.reduce((sum, item) => sum + item.totalSteps, 0);
-              const pct = allSteps > 0 ? Math.round((doneSteps / allSteps) * 100) : 0;
-              return `
-                <div onclick="openSubjectBoard('${c.id}')"
-                     class="bg-[#1A1A1D] hover:bg-[#1E1E22] border border-[#26262A] hover:border-[#3B82F6]/50 rounded-[14px] p-5 cursor-pointer transition flex flex-col justify-between">
-                  <div>
-                    <div class="flex items-center justify-between mb-4">
-                      <svg width="32" height="27" viewBox="0 0 36 30" fill="none">
-                        <path d="M2 5.5C2 3.567 3.567 2 5.5 2H12.6C13.65 2 14.64 2.47 15.3 3.28L16.7 5H30.5C32.433 5 34 6.567 34 8.5V24.5C34 26.433 32.433 28 30.5 28H5.5C3.567 28 2 26.433 2 24.5V5.5Z" fill="#2563EB" />
-                        <path d="M2 9.5C2 7.843 3.343 6.5 5 6.5H31C32.657 6.5 34 7.843 34 9.5V24.5C34 26.433 32.433 28 30.5 28H5.5C3.567 28 2 26.433 2 24.5V9.5Z" fill="#3B82F6" />
-                      </svg>
-                      <span class="text-[12px] font-medium text-[#60A5FA] bg-[#3B82F6]/15 border border-[#3B82F6]/25 px-2.5 py-0.5 rounded-full">
-                        ${pct}% abgeschlossen
-                      </span>
-                    </div>
-                    <h2 class="text-[18px] font-bold text-[#F4F4F6] mb-1.5">${escapeHtml(c.title)}</h2>
-                    <p class="text-[13px] text-[#8E8E93] leading-relaxed mb-5">${escapeHtml(c.description)}</p>
-                  </div>
+            <!-- Overarching Folder Cards Grid (exact glow + sparkle design + interactive hover effects) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+              ${COURSES.map((c, idx) => {
+                const theme = folderThemes[c.id] || folderThemes.rechnungswesen;
+                const doneSteps = c.cards.reduce((sum, item) => sum + item.completedSteps, 0);
+                const allSteps = c.cards.reduce((sum, item) => sum + item.totalSteps, 0);
+                const pct = allSteps > 0 ? Math.round((doneSteps / allSteps) * 100) : 0;
 
-                  <div>
-                    <div class="h-px bg-[#242428] mb-3.5"></div>
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center gap-2">
-                        ${renderSegmentedTicks(doneSteps, allSteps)}
-                        <span class="text-[12px] text-[#9A9AA0]">${doneSteps}/${allSteps}</span>
+                return `
+                  <div class="folder-card-slot" style="--stagger: ${idx};">
+                    <div onclick="openSubjectBoard('${c.id}')"
+                         onmousemove="handleFolderCardMove(event, this)"
+                         onmouseleave="handleFolderCardLeave(this)"
+                         class="folder-glow-card group cursor-pointer p-6 min-h-[214px] flex flex-col justify-between"
+                         style="border-color: ${theme.borderGlow}; --accent-rgb: ${theme.accentRgb};">
+                      
+                      <!-- Animated Top-Edge Light Shimmer -->
+                      <div class="folder-edge-shimmer pointer-events-none"></div>
+
+                      <!-- Top-Right Breathing Colored Radial Glow -->
+                      <div class="folder-glow-orb absolute inset-0 pointer-events-none" style="background: ${theme.glowGradient};"></div>
+
+                      <!-- Interactive Cursor-Following Spotlight -->
+                      <div class="folder-cursor-spotlight absolute inset-0 pointer-events-none"></div>
+
+                      <!-- Top-Right Twinkling 4-Point Sparkle Stars -->
+                      ${sparklesOverlaySvg}
+
+                      <!-- Top-Left Colored Line Icon with Hover Lift & Glow -->
+                      <div class="folder-icon-wrap relative z-10 w-10 h-10 flex items-center justify-start">
+                        ${theme.iconSvg}
                       </div>
-                      <span class="text-[12.5px] font-medium text-[#E4E4E7]">Board öffnen →</span>
+
+                      <!-- Bottom Title & Muted Description -->
+                      <div class="relative z-10 mt-6">
+                        <h2 class="text-[17.5px] font-semibold text-[#F4F4F6] tracking-[-0.015em] mb-2 group-hover:text-white transition">
+                          ${escapeHtml(c.title)}
+                        </h2>
+                        <p class="text-[13px] text-[#7E7E87] leading-[1.5] line-clamp-2 group-hover:text-[#9898A2] transition-colors">
+                          ${escapeHtml(c.description)}
+                        </p>
+
+                        <!-- Progress Bar & Footer -->
+                        <div class="mt-4 pt-3 border-t border-white/[0.06]">
+                          <div class="w-full h-1 bg-white/[0.06] rounded-full overflow-hidden mb-2.5">
+                            <div class="h-full rounded-full transition-all duration-500" style="width: ${pct}%; background-color: ${theme.accentColor};"></div>
+                          </div>
+                          <div class="flex items-center justify-between text-[11.5px] text-[#7E7E87]">
+                            <span>${c.cards.length} Lernmodule • ${pct}%</span>
+                            <span class="font-medium inline-flex items-center gap-1 transition-transform duration-200 group-hover:translate-x-1" style="color: ${theme.accentColor};">
+                              Öffnen <span>→</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              `;
-            }).join('')}
+                `;
+              }).join('')}
+            </div>
           </div>
         </div>
       `;
@@ -1473,172 +1422,151 @@
 
     function renderProjectsWorkspace() {
       const course = getCurrentCourse();
-      const viewTab = appState.activeViewTab;
+      const viewTabs = [
+        {
+          id: 'kanban',
+          label: 'Kanban',
+          icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="14" rx="1.5"/><rect x="14" y="4" width="6" height="9" rx="1.5"/></svg>`
+        },
+        {
+          id: 'list',
+          label: 'List',
+          icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>`
+        },
+        {
+          id: 'timeline',
+          label: 'Timeline',
+          icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><line x1="4" y1="7" x2="15" y2="7"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="5" y1="17" x2="16" y2="17"/></svg>`
+        },
+        {
+          id: 'table',
+          label: 'Table',
+          icon: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="4" x2="9" y2="20"/></svg>`
+        }
+      ];
 
-      let activeContentHtml = '';
-      if (viewTab === 'kanban') {
-        activeContentHtml = renderKanbanBoard(course);
-      } else if (viewTab === 'list') {
-        activeContentHtml = renderListView(course);
-      } else if (viewTab === 'timeline') {
-        activeContentHtml = renderTimelineView(course);
-      } else if (viewTab === 'table') {
-        activeContentHtml = renderTableView(course);
+      let activeBoardHtml = '';
+      if (appState.activeViewTab === 'kanban') {
+        activeBoardHtml = renderKanbanBoard(course);
+      } else if (appState.activeViewTab === 'list') {
+        activeBoardHtml = renderListView(course);
+      } else if (appState.activeViewTab === 'timeline') {
+        activeBoardHtml = renderTimelineView(course);
+      } else {
+        activeBoardHtml = renderTableView(course);
       }
 
       return `
-        <!-- Top Course Header Section (matches reference spacing & alignment 1:1) -->
-        <div class="px-6 sm:px-9 pt-6 sm:pt-7 pb-4 shrink-0">
-          <!-- Breadcrumb Row -->
-          <div class="flex items-center gap-2 text-[13px] mb-5">
-            <button onclick="openSubjectsOverview()" class="inline-flex items-center gap-2 text-[#8E8E93] hover:text-[#F4F4F6] transition" title="Alle 3 Lernprojekte anzeigen">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12" />
-                <polyline points="12 19 5 12 12 5" />
-              </svg>
-              <span>Project</span>
-            </button>
-            <span class="text-[#52525B]">/</span>
-            <span class="font-medium text-[#E4E4E7]">${escapeHtml(course.title)}</span>
-          </div>
+        <div class="flex-1 flex flex-col overflow-hidden">
+          <!-- Top Course Header Section (1:1 spacing & typography) -->
+          <div class="px-6 sm:px-9 pt-6 pb-4 shrink-0">
+            <!-- Breadcrumb + Quick Subject Switcher -->
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+              <div class="flex items-center gap-2.5 text-[13.5px]">
+                <button onclick="openSubjectsOverview()" class="inline-flex items-center gap-2 text-[#8E8E93] hover:text-[#F4F4F6] transition focus:outline-none">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
+                  </svg>
+                  <span>Project</span>
+                </button>
+                <span class="text-[#52525B]">/</span>
+                <span class="font-medium text-[#E4E4E7]">${escapeHtml(course.title)}</span>
+              </div>
 
-          <!-- Folder Icon + Course Title + Subject Pill Switcher Row -->
-          <div class="flex items-center justify-between gap-4 flex-wrap mb-5">
-            <div class="flex items-center gap-3.5">
-              <!-- Vibrant Cobalt Blue Folder Icon (1:1 match to screenshot) -->
-              <div class="shrink-0 flex items-center justify-center">
-                <svg width="36" height="30" viewBox="0 0 36 30" fill="none">
-                  <path d="M2 5.5C2 3.567 3.567 2 5.5 2H12.6C13.65 2 14.64 2.47 15.3 3.28L16.7 5H30.5C32.433 5 34 6.567 34 8.5V24.5C34 26.433 32.433 28 30.5 28H5.5C3.567 28 2 26.433 2 24.5V5.5Z" fill="#2563EB" />
-                  <path d="M2 9.5C2 7.843 3.343 6.5 5 6.5H31C32.657 6.5 34 7.843 34 9.5V24.5C34 26.433 32.433 28 30.5 28H5.5C3.567 28 2 26.433 2 24.5V9.5Z" fill="#3B82F6" />
+              <!-- Subtle Subject Switcher Pills -->
+              <div class="flex items-center gap-1.5 flex-wrap">
+                ${COURSES.map(c => `
+                  <button onclick="switchCourseById('${c.id}')"
+                          class="px-2.5 py-1 rounded-[7px] text-[12px] transition ${c.id === course.id ? 'bg-[#232328] border border-[#34343B] text-[#F4F4F6] font-medium' : 'text-[#7E7E86] hover:text-[#D4D4D8] hover:bg-[#19191D]'}">
+                    ${escapeHtml(c.title)}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Blue Folder Icon + Large Course Title -->
+            <div class="flex items-center gap-3.5 mb-5">
+              <div class="w-[34px] h-[28px] shrink-0 flex items-center justify-center">
+                <svg width="32" height="26" viewBox="0 0 36 30" fill="none">
+                  <path d="M1 5.5C1 3.29086 2.79086 1.5 5 1.5H12.2C13.3 1.5 14.35 1.95 15.1 2.75L16.9 4.65C17.45 5.2 18.2 5.5 19 5.5H31C33.2091 5.5 35 7.29086 35 9.5V24.5C35 26.7091 33.2091 28.5 31 28.5H5C2.79086 28.5 1 26.7091 1 24.5V5.5Z" fill="#436EE8" />
+                  <path d="M1 9.5C1 7.84315 2.34315 6.5 4 6.5H32C33.6569 6.5 35 7.84315 35 9.5V24.5C35 26.7091 33.2091 28.5 31 28.5H5C2.79086 28.5 1 26.7091 1 24.5V9.5Z" fill="#4B7BF5" />
                 </svg>
               </div>
-              <h1 class="text-[24px] sm:text-[28px] font-bold text-[#F4F4F6] tracking-[-0.02em] leading-tight">
+              <h1 class="text-[27px] sm:text-[31px] font-bold text-[#F4F4F6] tracking-[-0.025em] leading-tight">
                 ${escapeHtml(course.title)}
               </h1>
             </div>
 
-            <!-- Subtle Dark Subject Switcher Pills -->
-            <div class="inline-flex items-center bg-[#161618] border border-[#242428] rounded-[9px] p-1 gap-1 max-w-full overflow-x-auto">
-              ${COURSES.map(c => {
-                const active = c.id === course.id;
+            <!-- View Switcher Bar (Kanban, List, Timeline, Table) -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+              ${viewTabs.map(tab => {
+                const isActive = appState.activeViewTab === tab.id;
                 return `
-                  <button onclick="switchCourseById('${c.id}')"
-                          class="px-3 py-1 rounded-[6px] text-[12.5px] transition shrink-0 ${active ? 'bg-[#252529] border border-[#35353B] text-[#F4F4F6] font-medium' : 'text-[#8E8E93] hover:text-[#E4E4E7] border border-transparent'}">
-                    ${escapeHtml(c.title)}
+                  <button onclick="switchViewTab('${tab.id}')"
+                          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[9px] text-[13px] transition shrink-0 ${isActive ? 'bg-[#242428] border border-[#343439] text-[#F4F4F6] font-medium shadow-sm' : 'text-[#8E8E93] hover:text-[#E4E4E7] hover:bg-[#19191D] border border-transparent'}">
+                    <span class="${isActive ? 'text-[#F4F4F6]' : 'text-[#7E7E86]'}">${tab.icon}</span>
+                    <span>${tab.label}</span>
                   </button>
                 `;
               }).join('')}
             </div>
           </div>
 
-          <!-- View Switcher Pill Bar (Kanban | List | Timeline | Table) -->
-          <div class="inline-flex items-center bg-[#18181B] border border-[#242428] rounded-[10px] p-1 gap-1 max-w-full overflow-x-auto">
-            ${renderViewTabButton('kanban', 'Kanban', `
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4" y="4" width="6" height="14" rx="1.5" />
-                <rect x="14" y="4" width="6" height="9" rx="1.5" />
-              </svg>
-            `)}
-            ${renderViewTabButton('list', 'List', `
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
-                <line x1="8" y1="6" x2="20" y2="6" />
-                <line x1="8" y1="12" x2="20" y2="12" />
-                <line x1="8" y1="18" x2="20" y2="18" />
-                <circle cx="4" cy="6" r="1" fill="currentColor" />
-                <circle cx="4" cy="12" r="1" fill="currentColor" />
-                <circle cx="4" cy="18" r="1" fill="currentColor" />
-              </svg>
-            `)}
-            ${renderViewTabButton('timeline', 'Timeline', `
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
-                <line x1="4" y1="7" x2="14" y2="7" />
-                <line x1="8" y1="12" x2="20" y2="12" />
-                <line x1="6" y1="17" x2="16" y2="17" />
-              </svg>
-            `)}
-            ${renderViewTabButton('table', 'Table', `
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="16" rx="2" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-                <line x1="9" y1="4" x2="9" y2="20" />
-              </svg>
-            `)}
+          <!-- Horizontal Workspace Divider -->
+          <div class="h-px bg-[#202024] mx-6 sm:mx-9 shrink-0"></div>
+
+          <!-- Active View Content Area -->
+          <div class="flex-1 overflow-auto px-6 sm:px-9 py-5">
+            ${activeBoardHtml}
           </div>
         </div>
-
-        <!-- Subtle Horizontal Separator above Board -->
-        <div class="h-px bg-[#1E1E22] mx-6 sm:mx-9 shrink-0"></div>
-
-        <!-- Main View Body -->
-        <div class="flex-1 overflow-auto px-6 sm:px-9 pt-5 pb-8">
-          ${activeContentHtml}
-        </div>
-      `;
-    }
-
-    function renderViewTabButton(tabId, label, iconSvg) {
-      const isActive = appState.activeViewTab === tabId;
-      if (isActive) {
-        return `
-          <button onclick="switchViewTab('${tabId}')"
-                  class="inline-flex items-center gap-2 px-3 py-1.5 rounded-[7px] text-[13px] font-medium bg-[#252529] border border-[#35353B] text-[#F4F4F6] shadow-sm transition shrink-0">
-            ${iconSvg}
-            <span>${label}</span>
-          </button>
-        `;
-      }
-      return `
-        <button onclick="switchViewTab('${tabId}')"
-                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-[7px] text-[13px] font-normal text-[#8E8E93] hover:text-[#E4E4E7] hover:bg-[#1F1F23] border border-transparent transition shrink-0">
-          ${iconSvg}
-          <span>${label}</span>
-        </button>
       `;
     }
 
     function renderKanbanBoard(course) {
       const columns = [
-        { id: 'todo', title: 'To Do', barColor: '#787572' },
+        { id: 'todo', title: 'To Do', barColor: '#7E7E87' },
         { id: 'inprogress', title: 'In Progress', barColor: '#3B82F6' },
         { id: 'completed', title: 'Done', barColor: '#10B981' }
       ];
 
       return `
-        <div class="flex items-start gap-5 min-w-max pb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start min-w-0">
           ${columns.map(col => {
             const colCards = course.cards.filter(c => c.column === col.id);
             return `
               <section
-                data-column="${col.id}"
                 ondragover="handleDragOver(event)"
                 ondragleave="handleDragLeave(event)"
                 ondrop="handleDrop(event, '${col.id}')"
-                class="kanban-column w-[312px] shrink-0 flex flex-col"
+                class="kanban-column flex flex-col min-w-0 p-1 transition-colors"
               >
                 <!-- Column Header -->
-                <div class="flex items-center justify-between px-1 mb-4">
+                <div class="flex items-center justify-between px-1 mb-3.5">
                   <div class="flex items-center gap-2.5">
-                    <span class="w-[3px] h-[15px] rounded-[2px]" style="background-color: ${col.barColor};"></span>
-                    <h2 class="text-[14.5px] font-medium text-[#E4E4E7] tracking-[-0.01em]">${col.title}</h2>
+                    <span class="w-[2.5px] h-[14px] rounded-full" style="background-color: ${col.barColor};"></span>
+                    <h2 class="text-[14.5px] font-medium text-[#E4E4E7]">${col.title}</h2>
+                    <span class="text-[12px] text-[#6E6E77] font-medium">${colCards.length}</span>
                   </div>
-                  <button onclick="openAddCardModal('${col.id}')" title="Neues Lernmodul hinzufügen" class="text-[#78787F] hover:text-[#E4E4E7] p-1 rounded transition">
+                  <button onclick="openAddCardModal('${col.id}')" title="Modul hinzufügen" class="p-1 rounded-md text-[#78787F] hover:text-[#E4E4E7] hover:bg-[#1E1E22] transition">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                      <circle cx="12" cy="5" r="1.6" />
-                      <circle cx="12" cy="12" r="1.6" />
-                      <circle cx="12" cy="19" r="1.6" />
+                      <circle cx="12" cy="5" r="1.7" />
+                      <circle cx="12" cy="12" r="1.7" />
+                      <circle cx="12" cy="19" r="1.7" />
                     </svg>
                   </button>
                 </div>
 
                 <!-- Column Cards Stack -->
-                <div class="flex flex-col gap-3.5">
+                <div class="space-y-3.5">
                   ${colCards.map(card => renderKanbanCard(card)).join('')}
                 </div>
 
-                <!-- "+ Add New" Button below cards (1:1 match to screenshot) -->
+                <!-- "+ Add New" Footer Action (1:1 match to screenshot) -->
                 <button onclick="openAddCardModal('${col.id}')"
-                        class="mt-3.5 inline-flex items-center gap-2 px-1.5 py-2 rounded-[8px] text-[13.5px] font-medium text-[#9A9AA0] hover:text-[#F4F4F6] hover:bg-[#19191D] transition w-fit">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">
+                        class="mt-4 inline-flex items-center gap-2 px-1.5 py-2 text-[13.5px] font-medium text-[#9A9AA0] hover:text-[#F4F4F6] transition w-fit focus:outline-none">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
@@ -1652,46 +1580,47 @@
     }
 
     function renderListView(course) {
-      const groups = [
-        { id: 'todo', title: 'To Do', barColor: '#787572' },
-        { id: 'inprogress', title: 'In Progress', barColor: '#3B82F6' },
-        { id: 'completed', title: 'Done', barColor: '#10B981' }
-      ];
-
       return `
-        <div class="max-w-4xl space-y-6">
-          ${groups.map(g => {
-            const cards = course.cards.filter(c => c.column === g.id);
+        <div class="space-y-2.5 max-w-4xl">
+          ${course.cards.map(card => `
+            <div onclick="openModuleDrawer('${card.id}')"
+                 class="flex items-center justify-between gap-4 bg-[#1A1A1D] hover:bg-[#1E1E22] border border-[#26262A] rounded-[11px] px-4 py-3.5 cursor-pointer transition">
+              <div class="flex items-center gap-3 min-w-0">
+                ${renderPriorityBadge(card.priority)}
+                ${renderCategoryBadge(card.category)}
+                <span class="text-[14px] font-semibold text-[#F4F4F6] truncate">${escapeHtml(card.title)}</span>
+              </div>
+              <div class="flex items-center gap-4 shrink-0">
+                <span class="hidden sm:inline text-[12px] text-[#8E8E93]">${escapeHtml(card.duration)}</span>
+                ${renderSegmentedTicks(card.completedSteps, card.totalSteps)}
+                <span class="text-[12px] font-semibold text-[#E4E4E7] w-12 text-right">${card.completedSteps}/${card.totalSteps}</span>
+              </div>
+            </div>
+          `).join('')}
+          <button onclick="openAddCardModal('todo')" class="mt-3 inline-flex items-center gap-2 px-2 py-2 text-[13.5px] font-medium text-[#9A9AA0] hover:text-[#F4F4F6]">
+            <span>+ Add New</span>
+          </button>
+        </div>
+      `;
+    }
+
+    function renderTimelineView(course) {
+      return `
+        <div class="space-y-3.5 max-w-4xl">
+          ${course.cards.map(card => {
+            const pct = card.totalSteps > 0 ? Math.round((card.completedSteps / card.totalSteps) * 100) : 0;
             return `
-              <div class="bg-[#161618] border border-[#242428] rounded-[12px] overflow-hidden">
-                <div class="flex items-center justify-between px-4 py-3 border-b border-[#222226]">
+              <div onclick="openModuleDrawer('${card.id}')"
+                   class="bg-[#1A1A1D] hover:bg-[#1E1E22] border border-[#26262A] rounded-[12px] p-4 cursor-pointer transition">
+                <div class="flex items-center justify-between gap-3 mb-2.5">
                   <div class="flex items-center gap-2.5">
-                    <span class="w-[3px] h-[14px] rounded-[2px]" style="background-color: ${g.barColor};"></span>
-                    <span class="text-[14px] font-medium text-[#F4F4F6]">${g.title}</span>
-                    <span class="text-[12px] text-[#78787F] bg-[#1F1F23] px-2 py-0.5 rounded-full">${cards.length}</span>
+                    ${renderCategoryBadge(card.category)}
+                    <span class="text-[14px] font-semibold text-[#F4F4F6]">${escapeHtml(card.title)}</span>
                   </div>
-                  <button onclick="openAddCardModal('${g.id}')" class="text-[12.5px] text-[#9A9AA0] hover:text-white inline-flex items-center gap-1">
-                    <span>+ Add New</span>
-                  </button>
+                  <span class="text-[12px] text-[#8E8E93]">${escapeHtml(card.duration)} • ${pct}%</span>
                 </div>
-                <div class="divide-y divide-[#222226]">
-                  ${cards.map(card => `
-                    <div onclick="openModuleDrawer('${card.id}')" class="flex items-center justify-between gap-4 px-4 py-3.5 hover:bg-[#1C1C20] cursor-pointer transition flex-wrap">
-                      <div class="flex items-center gap-3 min-w-[240px]">
-                        ${renderPriorityBadge(card.priority)}
-                        ${renderCategoryBadge(card.category)}
-                        <span class="text-[14px] font-medium text-[#F2F2F4]">${escapeHtml(card.title)}</span>
-                      </div>
-                      <div class="flex items-center gap-5">
-                        <span class="text-[12px] text-[#7E7E85]">${card.lessonsCount} Lektionen • ${card.duration}</span>
-                        <div class="flex items-center gap-2">
-                          ${renderSegmentedTicks(card.completedSteps, card.totalSteps)}
-                          <span class="text-[12px] text-[#E4E4E7] font-medium">${card.completedSteps} / ${card.totalSteps}</span>
-                        </div>
-                        ${renderAvatarPair(card.avatars)}
-                      </div>
-                    </div>
-                  `).join('')}
+                <div class="w-full h-2.5 bg-[#111113] rounded-full overflow-hidden border border-[#252529]">
+                  <div class="h-full bg-[#3B82F6] rounded-full transition-all" style="width: ${pct}%;"></div>
                 </div>
               </div>
             `;
@@ -1700,186 +1629,480 @@
       `;
     }
 
-    function renderTimelineView(course) {
-      const weeks = ['Woche 1', 'Woche 2', 'Woche 3', 'Woche 4'];
-      return `
-        <div class="max-w-5xl bg-[#161618] border border-[#242428] rounded-[12px] p-5">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-[15px] font-semibold text-[#F4F4F6]">Lern-Roadmap &amp; Zeitplan</h3>
-            <span class="text-[12px] text-[#8E8E93]">Klicke auf einen Balken, um das Lernmodul zu öffnen</span>
-          </div>
-          <div class="grid grid-cols-4 gap-2 pb-3 border-b border-[#242428] text-[12px] font-medium text-[#8E8E93]">
-            ${weeks.map(w => `<div>${w}</div>`).join('')}
-          </div>
-          <div class="divide-y divide-[#222226]">
-            ${course.cards.map((card, idx) => {
-              const offsetPercent = (idx * 14) % 45;
-              const widthPercent = Math.min(55, 38 + (idx % 3) * 8);
-              const barBg = card.column === 'completed' ? '#10B981' : card.column === 'inprogress' ? '#3B82F6' : '#52525B';
-              return `
-                <div onclick="openModuleDrawer('${card.id}')" class="py-3.5 hover:bg-[#1B1B1F] px-2 rounded-lg cursor-pointer transition">
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                      ${renderCategoryBadge(card.category)}
-                      <span class="text-[13.5px] font-medium text-[#F4F4F6]">${escapeHtml(card.title)}</span>
-                    </div>
-                    <span class="text-[12px] text-[#8E8E93]">${card.completedSteps} / ${card.totalSteps} • ${card.duration}</span>
-                  </div>
-                  <div class="w-full h-6 bg-[#111113] rounded-[6px] relative overflow-hidden border border-[#242428]">
-                    <div class="absolute top-1 bottom-1 rounded-[4px] flex items-center px-2.5 text-[11px] font-medium text-white"
-                         style="left: ${offsetPercent}%; width: ${widthPercent}%; background-color: ${barBg};">
-                      ${Math.round((card.completedSteps / card.totalSteps) * 100)}%
-                    </div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `;
-    }
-
     function renderTableView(course) {
-      const statusLabels = {
-        todo: { text: 'To Do', color: '#9A9AA0' },
-        inprogress: { text: 'In Progress', color: '#60A5FA' },
-        completed: { text: 'Done', color: '#34D399' }
-      };
-
+      const statusLabels = { todo: 'To Do', inprogress: 'In Progress', completed: 'Done' };
       return `
-        <div class="max-w-5xl bg-[#161618] border border-[#242428] rounded-[12px] overflow-x-auto">
+        <div class="overflow-x-auto bg-[#161618] border border-[#242428] rounded-[12px]">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-[#242428] text-[12px] font-medium text-[#8E8E93]">
-                <th class="py-3 px-4">Lernmodul</th>
-                <th class="py-3 px-4">Status</th>
-                <th class="py-3 px-4">Priorität</th>
-                <th class="py-3 px-4">Fachbereich</th>
-                <th class="py-3 px-4">Fortschritt</th>
-                <th class="py-3 px-4">Zeitrahmen</th>
+              <tr class="border-b border-[#242428] text-[12px] text-[#8E8E93]">
+                <th class="py-3 px-4 font-medium">Lernmodul</th>
+                <th class="py-3 px-4 font-medium">Status</th>
+                <th class="py-3 px-4 font-medium">Priorität</th>
+                <th class="py-3 px-4 font-medium">Bereich</th>
+                <th class="py-3 px-4 font-medium">Fortschritt</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-[#222226] text-[13.5px]">
-              ${course.cards.map(card => {
-                const st = statusLabels[card.column] || statusLabels.todo;
-                return `
-                  <tr onclick="openModuleDrawer('${card.id}')" class="hover:bg-[#1C1C20] cursor-pointer transition">
-                    <td class="py-3.5 px-4 font-medium text-[#F4F4F6]">${escapeHtml(card.title)}</td>
-                    <td class="py-3.5 px-4 text-[12.5px]" style="color: ${st.color};">${st.text}</td>
-                    <td class="py-3.5 px-4">${renderPriorityBadge(card.priority)}</td>
-                    <td class="py-3.5 px-4">${renderCategoryBadge(card.category)}</td>
-                    <td class="py-3.5 px-4">
-                      <div class="flex items-center gap-2.5">
-                        ${renderSegmentedTicks(card.completedSteps, card.totalSteps)}
-                        <span class="text-[12px] text-[#E4E4E7]">${card.completedSteps} / ${card.totalSteps}</span>
-                      </div>
-                    </td>
-                    <td class="py-3.5 px-4 text-[12.5px] text-[#8E8E93]">${escapeHtml(card.duration)}</td>
-                  </tr>
-                `;
-              }).join('')}
+            <tbody class="divide-y divide-[#222226] text-[13px]">
+              ${course.cards.map(card => `
+                <tr onclick="openModuleDrawer('${card.id}')" class="hover:bg-[#1C1C20] cursor-pointer transition">
+                  <td class="py-3 px-4 font-semibold text-[#F4F4F6]">${escapeHtml(card.title)}</td>
+                  <td class="py-3 px-4 text-[#A1A1AA]">${statusLabels[card.column] || card.column}</td>
+                  <td class="py-3 px-4">${renderPriorityBadge(card.priority)}</td>
+                  <td class="py-3 px-4">${renderCategoryBadge(card.category)}</td>
+                  <td class="py-3 px-4">
+                    <div class="flex items-center gap-2.5">
+                      ${renderSegmentedTicks(card.completedSteps, card.totalSteps)}
+                      <span class="text-[12px] text-[#E4E4E7]">${card.completedSteps}/${card.totalSteps}</span>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
             </tbody>
           </table>
         </div>
       `;
     }
 
-    // =========================================================================
-    // 4. FUNCTIONAL SIDEBAR SECTIONS (Dashboard, Inbox, Calendar, Reports, Help, Settings)
-    // =========================================================================
-
-    function formatGermanDate(isoDate) {
-      if (!isoDate) return '';
-      const parts = isoDate.split('-');
-      if (parts.length !== 3) return isoDate;
-      return `${parts[2]}.${parts[1]}.${parts[0]}`;
-    }
-
     function renderDashboardView() {
-      const totalDone = COURSES.reduce((acc, c) => acc + c.cards.reduce((s, m) => s + m.completedSteps, 0), 0);
-      const totalAll = COURSES.reduce((acc, c) => acc + c.cards.reduce((s, m) => s + m.totalSteps, 0), 0);
+      const totalDone = COURSES.reduce((sum, c) => sum + c.cards.reduce((s, m) => s + m.completedSteps, 0), 0);
+      const totalAll = COURSES.reduce((sum, c) => sum + c.cards.reduce((s, m) => s + m.totalSteps, 0), 0);
+      const overallPct = totalAll > 0 ? Math.round((totalDone / totalAll) * 100) : 0;
+      const dailyPct = appState.dailyGoal > 0 ? Math.min(100, Math.round((appState.completedToday / appState.dailyGoal) * 100)) : 0;
+
+      const todoCards = COURSES.reduce((s, c) => s + c.cards.filter(m => m.column === 'todo').length, 0);
+      const inProgCards = COURSES.reduce((s, c) => s + c.cards.filter(m => m.column === 'inprogress').length, 0);
+      const doneCards = COURSES.reduce((s, c) => s + c.cards.filter(m => m.column === 'completed').length, 0);
+
       const sortedExams = [...appState.exams].sort((a, b) => a.date.localeCompare(b.date));
+      const nextExam = sortedExams[0] || null;
+      const upcomingExams = sortedExams.slice(0, 3);
+
+      const inProgressModules = COURSES.flatMap(c =>
+        c.cards
+          .filter(m => m.column === 'inprogress')
+          .map(m => ({ ...m, courseId: c.id, courseTitle: c.title }))
+      );
+      const spotlightModule = inProgressModules[0] || null;
+      const masteredFlashcards = appState.flashcards.filter(f => f.mastered).length;
+      const openFlashcards = appState.flashcards.length - masteredFlashcards;
+
+      // SVG Donut Ring Geometry (r = 34 -> circumference = 213.6)
+      const ringRadius = 34;
+      const ringCirc = 2 * Math.PI * ringRadius;
+      const ringOffset = ringCirc - (overallPct / 100) * ringCirc;
+
+      // Weekly rhythm bars (Mon-Sun)
+      const weekActivity = [
+        { day: 'Mo', units: 0, active: false },
+        { day: 'Di', units: 0, active: false },
+        { day: 'Mi', units: 0, active: false },
+        { day: 'Do', units: 0, active: false },
+        { day: 'Fr', units: 0, active: false },
+        { day: 'Sa', units: 0, active: false },
+        { day: 'So', units: Math.min(9, appState.completedToday), active: appState.completedToday > 0, isToday: true }
+      ];
+
+      const getDaysCountdown = (isoDate) => {
+        if (!isoDate) return '';
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const target = new Date(isoDate + 'T00:00:00');
+        const diffDays = Math.round((target - today) / (1000 * 60 * 60 * 24));
+        if (diffDays < 0) return 'Vorbei';
+        if (diffDays === 0) return 'Heute';
+        if (diffDays === 1) return 'Morgen';
+        return `in ${diffDays} Tagen`;
+      };
+
+      // Distinct domain-specific icons (different from the Project folder icons)
+      const subjectMeta = {
+        rechnungswesen: {
+          color: '#5294FF',
+          bgSoft: 'rgba(82, 148, 255, 0.12)',
+          borderSoft: 'rgba(82, 148, 255, 0.25)',
+          tag: 'BWL & Buchhaltung',
+          icon: `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5294FF" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="2" width="16" height="20" rx="2.5" />
+              <line x1="8" y1="6" x2="16" y2="6" />
+              <line x1="8" y1="11" x2="10" y2="11" />
+              <line x1="14" y1="11" x2="16" y2="11" />
+              <line x1="8" y1="15" x2="10" y2="15" />
+              <line x1="14" y1="15" x2="16" y2="15" />
+              <line x1="8" y1="19" x2="16" y2="19" />
+            </svg>
+          `
+        },
+        gespraechsgestaltung: {
+          color: '#E88D56',
+          bgSoft: 'rgba(232, 141, 86, 0.12)',
+          borderSoft: 'rgba(232, 141, 86, 0.25)',
+          tag: 'Kommunikation',
+          icon: `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E88D56" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          `
+        },
+        sozialkunde: {
+          color: '#9D75FA',
+          bgSoft: 'rgba(157, 117, 250, 0.12)',
+          borderSoft: 'rgba(157, 117, 250, 0.25)',
+          tag: 'Recht & Wirtschaft',
+          icon: `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9D75FA" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="21" x2="21" y2="21" />
+              <line x1="6" y1="10" x2="6" y2="18" />
+              <line x1="10" y1="10" x2="10" y2="18" />
+              <line x1="14" y1="10" x2="14" y2="18" />
+              <line x1="18" y1="10" x2="18" y2="18" />
+              <polygon points="12 3 2 8 22 8 12 3" />
+            </svg>
+          `
+        }
+      };
+
+      // Segmented pill meter for daily goal (up to 10 segments)
+      const totalGoalPills = Math.min(12, Math.max(4, appState.dailyGoal));
+      const filledGoalPills = Math.round((dailyPct / 100) * totalGoalPills);
 
       return `
         <div class="flex-1 overflow-y-auto px-6 sm:px-9 py-7">
-          <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
-            <div>
-              <p class="text-[13px] text-[#8E8E93] mb-1">Dienstag, 17. November 2026 • Dein Lernüberblick</p>
-              <h1 class="text-[26px] font-bold text-[#F4F4F6] tracking-[-0.02em]">Hallo, ${escapeHtml(appState.userName)}</h1>
-            </div>
-            <div class="flex items-center gap-2.5">
-              <button onclick="openAddExamModal()" class="px-3.5 py-2 rounded-[8px] bg-[#222227] hover:bg-[#2B2B31] border border-[#323239] text-[#E4E4E7] text-[13px] font-medium transition">
-                + Klassenarbeit eintragen
-              </button>
-              <button onclick="navigateSection('projects')" class="px-4 py-2 rounded-[8px] bg-[#3B82F6] hover:bg-[#2563EB] text-white text-[13px] font-medium transition">
-                Zu den Lernprojekten →
-              </button>
-            </div>
-          </div>
+          <div class="max-w-[1140px]">
 
-          <!-- Top KPI Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-7">
-            <div class="bg-[#1A1A1D] border border-[#26262A] rounded-[12px] p-4">
-              <div class="text-[12px] text-[#8E8E93] mb-1">Gesamtfortschritt (3 Fächer)</div>
-              <div class="text-[24px] font-bold text-[#F4F4F6]">${totalDone} <span class="text-[14px] font-normal text-[#78787F]">/ ${totalAll}</span></div>
-              <div class="mt-2">${renderSegmentedTicks(totalDone, totalAll)}</div>
-            </div>
-            <div class="bg-[#1A1A1D] border border-[#26262A] rounded-[12px] p-4">
-              <div class="text-[12px] text-[#8E8E93] mb-1">Anstehende Prüfungen</div>
-              <div class="text-[24px] font-bold text-[#F4F4F6]">${sortedExams.length} Termine</div>
-              <div class="text-[12px] text-[#60A5FA] mt-1">${sortedExams[0] ? `Nächste: ${formatGermanDate(sortedExams[0].date)}` : 'Keine offenen Termine'}</div>
-            </div>
-            <div class="bg-[#1A1A1D] border border-[#26262A] rounded-[12px] p-4">
-              <div class="text-[12px] text-[#8E8E93] mb-1">Lernkarten (Inbox)</div>
-              <div class="text-[24px] font-bold text-[#F4F4F6]">${appState.flashcards.filter(f => f.mastered).length} / ${appState.flashcards.length}</div>
-              <div class="text-[12px] text-[#10B981] mt-1">Karten sicher gewusst</div>
-            </div>
-            <div class="bg-[#1A1A1D] border border-[#26262A] rounded-[12px] p-4">
-              <div class="text-[12px] text-[#8E8E93] mb-1">Tagesziel</div>
-              <div class="text-[24px] font-bold text-[#F4F4F6]">${appState.completedToday} / ${appState.dailyGoal}</div>
-              <div class="text-[12px] text-[#9A9AA0] mt-1">Lerneinheiten heute</div>
-            </div>
-          </div>
-
-          <!-- 3 Subjects Progress Grid -->
-          <h2 class="text-[16px] font-semibold text-[#F4F4F6] mb-3.5">Deine 3 Fächer im Überblick</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-7">
-            ${COURSES.map(c => {
-              const done = c.cards.reduce((s, m) => s + m.completedSteps, 0);
-              const total = c.cards.reduce((s, m) => s + m.totalSteps, 0);
-              const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-              return `
-                <div onclick="openSubjectBoard('${c.id}')" class="bg-[#1A1A1D] hover:bg-[#1E1E22] border border-[#26262A] rounded-[12px] p-4 cursor-pointer transition">
-                  <div class="flex items-center justify-between mb-2">
-                    <span class="text-[15px] font-semibold text-[#F4F4F6]">${escapeHtml(c.title)}</span>
-                    <span class="text-[12px] font-medium text-[#60A5FA]">${pct}%</span>
-                  </div>
-                  <p class="text-[12.5px] text-[#8E8E93] mb-3.5 line-clamp-2">${escapeHtml(c.description)}</p>
-                  <div class="flex items-center justify-between">
-                    ${renderSegmentedTicks(done, total)}
-                    <span class="text-[12px] text-[#9A9AA0]">${done} / ${total}</span>
-                  </div>
+            <!-- Top Command Bar with Weekly Activity Visualizer -->
+            <div class="bg-[#161618] border border-[#242429] rounded-[16px] p-5 sm:p-6 mb-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div>
+                <div class="flex items-center gap-2.5 mb-2">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#3B82F6]/12 border border-[#3B82F6]/25 text-[11.5px] font-medium text-[#60A5FA]">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                    </svg>
+                    ${appState.completedToday > 0 ? 'Aktiv heute' : 'Lernstart bereit'}
+                  </span>
+                  <span class="text-[12px] text-[#7E7E87]">Dienstag, 17. Nov</span>
                 </div>
-              `;
-            }).join('')}
-          </div>
-
-          <!-- Synced Upcoming Exams Widget -->
-          <div class="flex items-center justify-between mb-3.5">
-            <h2 class="text-[16px] font-semibold text-[#F4F4F6]">Nächste Klassenarbeiten &amp; Tests</h2>
-            <button onclick="navigateSection('calendar')" class="text-[12.5px] text-[#60A5FA] hover:underline">Alle im Kalender öffnen →</button>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            ${sortedExams.slice(0, 3).map(ex => `
-              <div onclick="openExamDetailModal('${ex.id}')" class="bg-[#1A1A1D] hover:bg-[#1E1E22] border border-[#26262A] rounded-[12px] p-4 cursor-pointer transition">
-                <div class="flex items-center justify-between gap-2 mb-2">
-                  ${renderCategoryBadge(ex.subject)}
-                  <span class="text-[12px] font-medium text-[#E59A3C]">${formatGermanDate(ex.date)}</span>
-                </div>
-                <h3 class="text-[14px] font-semibold text-[#F4F4F6] mb-1.5">${escapeHtml(ex.title)}</h3>
-                <p class="text-[12px] text-[#8E8E93] line-clamp-2 whitespace-pre-line">${escapeHtml(ex.topics)}</p>
+                <h1 class="text-[24px] sm:text-[28px] font-bold text-[#F4F4F6] tracking-[-0.025em] leading-tight">
+                  Guten Abend, ${escapeHtml(appState.userName)}
+                </h1>
+                <p class="text-[13.5px] text-[#8E8E93] mt-1">
+                  Bereit für deine nächste Lerneinheit in Rechnungswesen, Gesprächsgestaltung oder Sozialkunde?
+                </p>
               </div>
-            `).join('')}
+
+              <!-- Right: Compact 7-Day Rhythm Bars + Quick Buttons -->
+              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 shrink-0">
+                <div class="bg-[#111113] border border-[#222226] rounded-[12px] px-4 py-3">
+                  <div class="flex items-center justify-between gap-4 mb-2">
+                    <span class="text-[11px] font-medium uppercase tracking-wider text-[#7E7E87]">Wochenaktivität</span>
+                    <span class="text-[11.5px] font-semibold text-[#60A5FA]">${appState.completedToday} Einh.</span>
+                  </div>
+                  <div class="flex items-end gap-2 h-9">
+                    ${weekActivity.map(d => {
+                      const barH = d.units > 0 ? Math.max(24, Math.min(100, d.units * 14)) : 14;
+                      return `
+                        <div class="flex flex-col items-center gap-1">
+                          <div class="w-3.5 h-6 bg-[#1B1B1F] rounded-[4px] flex items-end overflow-hidden">
+                            <div class="w-full rounded-[3px] transition-all duration-300 ${d.isToday && d.units > 0 ? 'bg-[#3B82F6]' : 'bg-[#282830]'}" style="height: ${barH}%;"></div>
+                          </div>
+                          <span class="text-[10px] ${d.isToday ? 'text-[#60A5FA] font-semibold' : 'text-[#6E6E77]'}">${d.day}</span>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+
+                <div class="flex sm:flex-col gap-2">
+                  <button onclick="openAddExamModal()"
+                          class="px-3.5 py-2 rounded-[9px] bg-[#3B82F6] hover:bg-[#2563EB] text-[12.5px] font-medium text-white transition whitespace-nowrap">
+                    + Klausur eintragen
+                  </button>
+                  <button onclick="navigateSection('inbox')"
+                          class="px-3.5 py-2 rounded-[9px] bg-[#1F1F24] hover:bg-[#27272D] border border-[#2E2E35] text-[12.5px] font-medium text-[#E4E4E7] transition whitespace-nowrap">
+                    Karteikarten (${openFlashcards} offen)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bento Row 1: 3 Distinct Architectural Widgets (Donut Ring + Stepper + Exam Ticket) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-7">
+
+              <!-- Widget A (5 cols): SVG Donut Progress Ring & Module Distribution -->
+              <div onclick="openSubjectsOverview()"
+                   class="lg:col-span-5 bg-[#161618] hover:bg-[#19191C] border border-[#242429] hover:border-[#32323A] rounded-[16px] p-5 cursor-pointer transition flex items-center justify-between gap-5">
+                <div class="flex items-center gap-4">
+                  <div class="relative w-[84px] h-[84px] shrink-0 flex items-center justify-center">
+                    <svg class="w-full h-full -rotate-90" viewBox="0 0 84 84">
+                      <circle cx="42" cy="42" r="${ringRadius}" fill="none" stroke="#222227" stroke-width="7" />
+                      <circle cx="42" cy="42" r="${ringRadius}" fill="none" stroke="#3B82F6" stroke-width="7"
+                              stroke-linecap="round"
+                              stroke-dasharray="${ringCirc.toFixed(1)}"
+                              stroke-dashoffset="${ringOffset.toFixed(1)}"
+                              class="transition-all duration-500" />
+                    </svg>
+                    <span class="absolute text-[17px] font-bold text-[#F4F4F6]">${overallPct}%</span>
+                  </div>
+                  <div>
+                    <div class="text-[12px] font-medium text-[#8E8E93] mb-0.5">Gesamtfortschritt</div>
+                    <div class="text-[19px] font-bold text-[#F4F4F6] tracking-[-0.015em]">${totalDone} / ${totalAll}</div>
+                    <div class="text-[12px] text-[#60A5FA] mt-1">Lektionen abgeschlossen</div>
+                  </div>
+                </div>
+
+                <!-- Mini Status Breakdown Pills -->
+                <div class="hidden sm:flex flex-col gap-1.5 text-[11.5px] border-l border-[#232328] pl-4 shrink-0">
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="flex items-center gap-1.5 text-[#8E8E93]"><span class="w-1.5 h-1.5 rounded-full bg-[#7E7E87]"></span>To Do</span>
+                    <span class="font-semibold text-[#E4E4E7]">${todoCards}</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="flex items-center gap-1.5 text-[#8E8E93]"><span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span>Aktiv</span>
+                    <span class="font-semibold text-[#E4E4E7]">${inProgCards}</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="flex items-center gap-1.5 text-[#8E8E93]"><span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>Fertig</span>
+                    <span class="font-semibold text-[#E4E4E7]">${doneCards}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Widget B (4 cols): Interactive Tagesziel Stepper & Pill Meter -->
+              <div class="lg:col-span-4 bg-[#161618] border border-[#242429] rounded-[16px] p-5 flex flex-col justify-between">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-[9px] bg-[#10B981]/12 border border-[#10B981]/25 flex items-center justify-center text-[#34D399]">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <circle cx="12" cy="12" r="6" />
+                        <circle cx="12" cy="12" r="2" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="text-[13px] font-semibold text-[#F4F4F6]">Heutiges Tagesziel</div>
+                      <div class="text-[11.5px] text-[#7E7E87]">${dailyPct >= 100 ? 'Ziel erreicht!' : `Noch ${Math.max(0, appState.dailyGoal - appState.completedToday)} Einheiten offen`}</div>
+                    </div>
+                  </div>
+
+                  <!-- Stepper Controls -->
+                  <div class="flex items-center gap-1 bg-[#111113] border border-[#26262C] rounded-[8px] p-1">
+                    <button onclick="adjustTodayProgress(-1)" title="Einheit abziehen"
+                            class="w-6 h-6 rounded-[6px] hover:bg-[#222227] text-[#9A9AA0] hover:text-white text-[13px] font-semibold transition">−</button>
+                    <span class="px-1.5 text-[12.5px] font-bold text-[#F4F4F6]">${appState.completedToday}/${appState.dailyGoal}</span>
+                    <button onclick="adjustTodayProgress(1)" title="Einheit abschließen"
+                            class="w-6 h-6 rounded-[6px] bg-[#10B981]/20 hover:bg-[#10B981]/30 text-[#34D399] text-[13px] font-semibold transition">+</button>
+                  </div>
+                </div>
+
+                <!-- Segmented Pill Bar -->
+                <div class="mt-4">
+                  <div class="grid gap-1.5" style="grid-template-columns: repeat(${totalGoalPills}, minmax(0, 1fr));">
+                    ${Array.from({ length: totalGoalPills }, (_, i) => `
+                      <div class="h-2 rounded-full transition-all duration-300 ${i < filledGoalPills ? 'bg-[#10B981]' : 'bg-[#222227]'}"></div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Widget C (3 cols): Perforated Exam Countdown Ticket -->
+              <div onclick="navigateSection('calendar')"
+                   class="lg:col-span-3 bg-[#161618] hover:bg-[#19191C] border border-[#242429] hover:border-[#F59E0B]/35 rounded-[16px] p-5 cursor-pointer transition flex flex-col justify-between relative">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-[#FBBF24]">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <polyline points="12 7 12 12 15 15" />
+                    </svg>
+                    Nächster Termin
+                  </span>
+                  <span class="text-[11.5px] font-semibold px-2 py-0.5 rounded bg-[#F59E0B]/15 text-[#FBBF24]">
+                    ${nextExam ? getDaysCountdown(nextExam.date) : 'Frei'}
+                  </span>
+                </div>
+
+                <div class="my-2.5 border-t border-dashed border-[#2A2A31]"></div>
+
+                <div>
+                  <div class="text-[15.5px] font-bold text-[#F4F4F6] truncate">
+                    ${nextExam ? escapeHtml(nextExam.subject) : 'Keine Klausur'}
+                  </div>
+                  <div class="flex items-center justify-between text-[12px] text-[#8E8E93] mt-0.5">
+                    <span>${nextExam ? `${formatGermanDate(nextExam.date)} • ${escapeHtml(nextExam.type)}` : 'Termin hinzufügen'}</span>
+                    <span class="text-[#FBBF24]">→</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bento Row 2: Fächer-Fortschrittsmatrix (Clean Horizontal Strips with Domain Icons) -->
+            <div class="flex items-center justify-between mb-3.5">
+              <div class="flex items-center gap-2">
+                <h2 class="text-[15.5px] font-semibold text-[#F4F4F6] tracking-[-0.01em]">Fächer-Fortschritt</h2>
+                <span class="text-[12px] text-[#6E6E77]">• Klicke zum Öffnen</span>
+              </div>
+              <button onclick="openSubjectsOverview()" class="text-[12.5px] text-[#8E8E93] hover:text-[#F4F4F6] transition">
+                Zu den Ordnern →
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              ${COURSES.map(c => {
+                const meta = subjectMeta[c.id] || subjectMeta.rechnungswesen;
+                const d = c.cards.reduce((s, m) => s + m.completedSteps, 0);
+                const t = c.cards.reduce((s, m) => s + m.totalSteps, 0);
+                const pct = t > 0 ? Math.round((d / t) * 100) : 0;
+                const activeCount = c.cards.filter(m => m.column === 'inprogress').length;
+
+                return `
+                  <div onclick="openSubjectBoard('${c.id}')"
+                       class="group bg-[#161618] hover:bg-[#1B1B1F] border border-[#242429] hover:border-[#34343C] rounded-[14px] p-4 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 relative overflow-hidden">
+                    <!-- Subtle Left Accent Stripe -->
+                    <div class="absolute inset-y-3 left-0 w-[3px] rounded-r-full" style="background-color: ${meta.color};"></div>
+
+                    <div class="flex items-center justify-between gap-3 mb-3 pl-1.5">
+                      <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105"
+                             style="background-color: ${meta.bgSoft}; border: 1px solid ${meta.borderSoft};">
+                          ${meta.icon}
+                        </div>
+                        <div class="min-w-0">
+                          <h3 class="text-[15px] font-semibold text-[#F4F4F6] truncate group-hover:text-white">${escapeHtml(c.title)}</h3>
+                          <div class="text-[11.5px] text-[#7E7E87]">${meta.tag} • ${activeCount} aktiv</div>
+                        </div>
+                      </div>
+                      <span class="text-[14px] font-bold shrink-0" style="color: ${meta.color};">${pct}%</span>
+                    </div>
+
+                    <div class="pl-1.5 pt-2.5 border-t border-[#212126] flex items-center justify-between gap-2">
+                      ${renderSegmentedTicks(d, t)}
+                      <span class="text-[11.5px] text-[#8E8E93] group-hover:text-[#E4E4E7] transition">${d}/${t} Einh. →</span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- Bento Row 3: Vertical Exam Timeline (7 cols) & Actionable Study Queue (5 cols) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+              <!-- Left: Vertical Timeline Rail for Upcoming Exams -->
+              <div class="lg:col-span-7 bg-[#161618] border border-[#242429] rounded-[16px] p-5">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    <h2 class="text-[15px] font-semibold text-[#F4F4F6]">Klausuren-Fahrplan &amp; Stoffübersicht</h2>
+                  </div>
+                  <button onclick="navigateSection('calendar')" class="text-[12px] text-[#60A5FA] hover:underline">Kalender öffnen →</button>
+                </div>
+
+                ${upcomingExams.length === 0 ? `
+                  <div class="py-8 text-center">
+                    <p class="text-[13px] text-[#8E8E93] mb-3">Keine anstehenden Prüfungen eingetragen.</p>
+                    <button onclick="openAddExamModal()" class="px-3.5 py-1.5 rounded-[8px] bg-[#1F1F24] hover:bg-[#28282E] border border-[#2E2E35] text-[12px] font-medium text-[#E4E4E7] transition">
+                      + Ersten Termin eintragen
+                    </button>
+                  </div>
+                ` : `
+                  <div class="relative pl-5 space-y-4 before:content-[''] before:absolute before:left-[6px] before:top-2 before:bottom-2 before:w-[1.5px] before:bg-[#27272E]">
+                    ${upcomingExams.map((ex, idx) => `
+                      <div onclick="openExamDetailModal('${ex.id}')"
+                           class="relative group bg-[#121214] hover:bg-[#1A1A1E] border border-[#232329] hover:border-[#34343D] rounded-[12px] p-3.5 cursor-pointer transition">
+                        <!-- Timeline Node Dot -->
+                        <span class="absolute -left-[20px] top-4 w-3 h-3 rounded-full border-2 border-[#161618] ${idx === 0 ? 'bg-[#3B82F6] ring-4 ring-[#3B82F6]/15' : 'bg-[#52525C]'}"></span>
+
+                        <div class="flex items-center justify-between gap-2 flex-wrap mb-1.5">
+                          <div class="flex items-center gap-2">
+                            ${renderCategoryBadge(ex.subject)}
+                            <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-[#1E1E23] text-[#C4C4CC]">${escapeHtml(ex.type)}</span>
+                          </div>
+                          <span class="text-[12px] font-semibold ${idx === 0 ? 'text-[#FBBF24]' : 'text-[#8E8E93]'}">
+                            ${formatGermanDate(ex.date)} (${getDaysCountdown(ex.date)})
+                          </span>
+                        </div>
+
+                        <h3 class="text-[14px] font-semibold text-[#F4F4F6] group-hover:text-white mb-1">${escapeHtml(ex.title)}</h3>
+                        <p class="text-[12px] text-[#8E8E93] line-clamp-2 leading-relaxed">${escapeHtml(ex.topics)}</p>
+                      </div>
+                    `).join('')}
+                  </div>
+                `}
+              </div>
+
+              <!-- Right: Active Module Launcher + Layered Flashcard Deck -->
+              <div class="lg:col-span-5 space-y-4">
+
+                <!-- Module Launcher Card (Clean Studio Card with Play Button) -->
+                ${spotlightModule ? `
+                  <div class="bg-[#161618] border border-[#242429] rounded-[16px] p-5">
+                    <div class="flex items-center justify-between mb-3">
+                      <span class="text-[11.5px] font-semibold uppercase tracking-wider text-[#60A5FA]">Aktuelles Lernmodul</span>
+                      ${renderPriorityBadge(spotlightModule.priority)}
+                    </div>
+
+                    <div class="text-[12px] text-[#7E7E87] mb-1">${escapeHtml(spotlightModule.courseTitle)} • ${escapeHtml(spotlightModule.category)}</div>
+                    <h3 class="text-[16px] font-bold text-[#F4F4F6] leading-snug mb-2">
+                      ${escapeHtml(spotlightModule.title)}
+                    </h3>
+                    <p class="text-[12.5px] text-[#8E8E93] line-clamp-2 leading-relaxed mb-4">
+                      ${escapeHtml(spotlightModule.summary)}
+                    </p>
+
+                    <div class="bg-[#111113] border border-[#222227] rounded-[10px] p-3 flex items-center justify-between gap-3">
+                      <div class="flex items-center gap-2.5">
+                        ${renderSegmentedTicks(spotlightModule.completedSteps, spotlightModule.totalSteps)}
+                        <span class="text-[12px] font-semibold text-[#E4E4E7]">
+                          ${spotlightModule.completedSteps}/${spotlightModule.totalSteps}
+                        </span>
+                      </div>
+                      <button onclick="selectSearchResult('${spotlightModule.courseId}', '${spotlightModule.id}')"
+                              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[#3B82F6] hover:bg-[#2563EB] text-[12px] font-medium text-white transition">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                          <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                        <span>Weiterlernen</span>
+                      </button>
+                    </div>
+                  </div>
+                ` : ''}
+
+                <!-- Stacked Flashcard Deck Widget -->
+                <div class="relative pt-2">
+                  <!-- Subtle Background Stacked Card Effect -->
+                  <div class="mx-3 h-3 bg-[#1C1C20] border border-[#28282F] rounded-t-[12px] -mb-1.5"></div>
+                  <div onclick="navigateSection('inbox')"
+                       class="relative bg-[#161618] hover:bg-[#1A1A1E] border border-[#26262D] hover:border-[#9D75FA]/40 rounded-[16px] p-5 cursor-pointer transition group">
+                    <div class="flex items-center justify-between gap-3 mb-2.5">
+                      <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-[9px] bg-[#9D75FA]/15 border border-[#9D75FA]/30 flex items-center justify-center text-[#A78BFA]">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="6" width="16" height="14" rx="2" />
+                            <path d="M6 2h14a2 2 0 0 1 2 2v14" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 class="text-[14px] font-semibold text-[#F4F4F6]">Karteikarten-Trainer</h3>
+                          <div class="text-[11.5px] text-[#7E7E87]">${masteredFlashcards} von ${appState.flashcards.length} Karten gemeistert</div>
+                        </div>
+                      </div>
+                      <span class="text-[12.5px] font-medium text-[#A78BFA] group-hover:translate-x-0.5 transition-transform">Starten →</span>
+                    </div>
+                    <p class="text-[12.5px] text-[#8E8E93] leading-relaxed">
+                      Schnelle Wiederholungsfragen zu Buchungssätzen, 4-Ohren-Modell und Arbeitsrecht.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </div>
         </div>
       `;
@@ -1887,80 +2110,85 @@
 
     function renderInboxView() {
       const cards = appState.flashcards;
-      const currentIdx = appState.activeFlashcardIndex % Math.max(1, cards.length);
-      const currentCard = cards[currentIdx];
+      const currentCard = cards[appState.activeFlashcardIndex % Math.max(1, cards.length)];
+      const masteredCount = cards.filter(c => c.mastered).length;
 
       return `
         <div class="flex-1 overflow-y-auto px-6 sm:px-9 py-7 max-w-5xl">
-          <div class="mb-6">
-            <h1 class="text-[26px] font-bold text-[#F4F4F6] tracking-[-0.02em] mb-1">Inbox &amp; Active-Recall Lernkarten</h1>
-            <p class="text-[13.5px] text-[#8E8E93]">Halte unklare Fragen als Merkzettel fest und trainiere mit deinen Karteikarten</p>
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+            <div>
+              <h1 class="text-[26px] font-bold text-[#F4F4F6] tracking-[-0.02em]">Inbox &amp; Active Recall</h1>
+              <p class="text-[13.5px] text-[#8E8E93]">Karteikarten trainieren und schnelle Merkzettel für deine Fächer festhalten</p>
+            </div>
+            <span class="px-3 py-1.5 rounded-[8px] bg-[#1A1A1D] border border-[#28282E] text-[12.5px] text-[#A78BFA] font-medium">
+              ${masteredCount} / ${cards.length} Karteikarten gewusst
+            </span>
           </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Left 7 Cols: Interactive Flashcard Deck -->
-            <div class="lg:col-span-7 space-y-4">
-              <div class="flex items-center justify-between">
-                <h2 class="text-[15px] font-semibold text-[#F4F4F6]">Karteikarten-Trainer (${currentIdx + 1} / ${cards.length})</h2>
-                <span class="text-[12px] text-[#10B981]">${cards.filter(c => c.mastered).length} gewusst</span>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Flashcard Trainer (7 cols) -->
+            <div class="lg:col-span-7 bg-[#161618] border border-[#242429] rounded-[16px] p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  ${currentCard ? renderCategoryBadge(currentCard.subject) : ''}
+                  <span class="text-[12px] text-[#7E7E87]">Karte ${(appState.activeFlashcardIndex % Math.max(1, cards.length)) + 1} von ${cards.length}</span>
+                </div>
+                ${currentCard?.mastered ? `<span class="text-[11.5px] text-[#34D399] font-medium">✓ Gewusst</span>` : `<span class="text-[11.5px] text-[#8E8E93]">Offen</span>`}
               </div>
 
               ${currentCard ? `
                 <div onclick="flipFlashcard()"
-                     class="min-h-[230px] bg-[#1A1A1D] hover:bg-[#1D1D21] border border-[#2A2A30] rounded-[14px] p-6 flex flex-col justify-between cursor-pointer transition">
-                  <div class="flex items-center justify-between">
-                    ${renderCategoryBadge(currentCard.subject)}
-                    <span class="text-[11.5px] text-[#78787F]">${appState.flashcardFlipped ? 'ANTWORT' : 'FRAGE (Klicken zum Umdrehen)'}</span>
-                  </div>
-                  <div class="my-5 text-[16px] font-medium text-[#F4F4F6] leading-relaxed">
+                     class="min-h-[210px] bg-[#111113] hover:bg-[#141417] border border-[#27272E] rounded-[12px] p-6 flex flex-col items-center justify-center text-center cursor-pointer transition">
+                  <span class="text-[11px] uppercase tracking-wider font-semibold ${appState.flashcardFlipped ? 'text-[#34D399]' : 'text-[#60A5FA]'} mb-3">
+                    ${appState.flashcardFlipped ? 'Antwort & Lösung' : 'Prüfungsfrage (Klicken zum Umdrehen)'}
+                  </span>
+                  <p class="text-[15.5px] font-medium text-[#F4F4F6] leading-relaxed max-w-lg">
                     ${escapeHtml(appState.flashcardFlipped ? currentCard.answer : currentCard.question)}
-                  </div>
-                  <div class="flex items-center justify-between text-[12px] text-[#8E8E93]">
-                    <span>${currentCard.mastered ? '✓ Bereits als gewusst markiert' : 'Noch in Wiederholung'}</span>
-                    <span class="text-[#60A5FA]">Karte umdrehen ↻</span>
-                  </div>
+                  </p>
                 </div>
 
-                <div class="flex items-center justify-between gap-2.5 flex-wrap">
+                <div class="mt-4 flex items-center justify-between flex-wrap gap-2">
                   <div class="flex items-center gap-2">
-                    <button onclick="prevFlashcard()" class="px-3 py-2 rounded-[8px] bg-[#1E1E22] hover:bg-[#27272C] border border-[#2E2E34] text-[13px] text-[#E4E4E7]">← Zurück</button>
-                    <button onclick="nextFlashcard()" class="px-3 py-2 rounded-[8px] bg-[#1E1E22] hover:bg-[#27272C] border border-[#2E2E34] text-[13px] text-[#E4E4E7]">Weiter →</button>
+                    <button onclick="prevFlashcard()" class="px-3 py-1.5 rounded-[8px] bg-[#1F1F24] hover:bg-[#28282E] text-[12.5px] text-[#E4E4E7]">← Zurück</button>
+                    <button onclick="flipFlashcard()" class="px-3 py-1.5 rounded-[8px] bg-[#1F1F24] hover:bg-[#28282E] text-[12.5px] text-[#E4E4E7]">Umdrehen</button>
+                    <button onclick="nextFlashcard()" class="px-3 py-1.5 rounded-[8px] bg-[#1F1F24] hover:bg-[#28282E] text-[12.5px] text-[#E4E4E7]">Weiter →</button>
                   </div>
                   <div class="flex items-center gap-2">
-                    <button onclick="markFlashcard('${currentCard.id}', false)" class="px-3.5 py-2 rounded-[8px] bg-[#F59E0B]/15 border border-[#F59E0B]/30 text-[#FBBF24] text-[13px] font-medium">Wiederholen</button>
-                    <button onclick="markFlashcard('${currentCard.id}', true)" class="px-3.5 py-2 rounded-[8px] bg-[#10B981]/15 border border-[#10B981]/30 text-[#34D399] text-[13px] font-medium">✓ Gewusst</button>
+                    <button onclick="markFlashcard('${currentCard.id}', false)" class="px-3 py-1.5 rounded-[8px] bg-[#F59E0B]/15 hover:bg-[#F59E0B]/25 text-[#FBBF24] text-[12px] font-medium">Nochmal üben</button>
+                    <button onclick="markFlashcard('${currentCard.id}', true)" class="px-3 py-1.5 rounded-[8px] bg-[#10B981]/20 hover:bg-[#10B981]/30 text-[#34D399] text-[12px] font-medium">✓ Gewusst</button>
                   </div>
                 </div>
               ` : ''}
             </div>
 
-            <!-- Right 5 Cols: Schnellnotizen / Merkzettel -->
-            <div class="lg:col-span-5 space-y-4">
-              <h2 class="text-[15px] font-semibold text-[#F4F4F6]">Schnellnotizen &amp; Offene Fragen</h2>
-              <form onsubmit="addQuickNote(event)" class="bg-[#1A1A1D] border border-[#26262A] rounded-[12px] p-3.5 space-y-2.5">
-                <select id="quick-note-subject" class="w-full bg-[#111113] border border-[#2A2A30] rounded-[7px] px-2.5 py-1.5 text-[12.5px] text-[#E4E4E7] focus:outline-none">
+            <!-- Quick Notes / Merkzettel (5 cols) -->
+            <div class="lg:col-span-5 bg-[#161618] border border-[#242429] rounded-[16px] p-5">
+              <h2 class="text-[15px] font-semibold text-[#F4F4F6] mb-3">Schnell-Merkzettel</h2>
+              <form onsubmit="addQuickNote(event)" class="space-y-2.5 mb-4">
+                <select id="quick-note-subject" class="w-full bg-[#111113] border border-[#2A2A30] rounded-[8px] px-3 py-2 text-[12.5px] text-[#E4E4E7] focus:outline-none">
                   <option value="Rechnungswesen">Rechnungswesen</option>
                   <option value="Gesprächsgestaltung">Gesprächsgestaltung</option>
                   <option value="Sozialkunde">Sozialkunde</option>
                 </select>
-                <input id="quick-note-text" type="text" placeholder="Schnellnotiz oder unklare Frage merken..."
-                       class="w-full bg-[#111113] border border-[#2A2A30] rounded-[7px] px-3 py-2 text-[13px] text-[#F4F4F6] placeholder-[#686870] focus:outline-none focus:border-[#3B82F6]" />
-                <button type="submit" class="w-full py-2 rounded-[7px] bg-[#3B82F6] hover:bg-[#2563EB] text-white text-[13px] font-medium transition">
-                  + Merkzettel speichern
-                </button>
+                <div class="flex gap-2">
+                  <input id="quick-note-text" type="text" placeholder="Wichtige Formel oder Paragraf..."
+                         class="flex-1 bg-[#111113] border border-[#2A2A30] rounded-[8px] px-3 py-2 text-[12.5px] text-[#F4F4F6] placeholder-[#686870] focus:outline-none focus:border-[#3B82F6]" />
+                  <button type="submit" class="px-3 py-2 rounded-[8px] bg-[#3B82F6] hover:bg-[#2563EB] text-white text-[12.5px] font-medium">+</button>
+                </div>
               </form>
 
-              <div class="space-y-2.5">
-                ${appState.quickNotes.map(note => `
-                  <div class="bg-[#1A1A1D] border border-[#26262A] rounded-[10px] p-3.5 flex items-start justify-between gap-3">
-                    <div>
-                      <div class="flex items-center gap-2 mb-1.5">
-                        ${renderCategoryBadge(note.subject)}
-                        <span class="text-[11px] text-[#78787F]">${escapeHtml(note.time)}</span>
-                      </div>
-                      <p class="text-[13px] text-[#E4E4E7] leading-relaxed">${escapeHtml(note.text)}</p>
+              <div class="space-y-2.5 max-h-[280px] overflow-y-auto">
+                ${appState.quickNotes.length === 0 ? `
+                  <div class="py-6 text-center text-[12.5px] text-[#78787F]">
+                    Noch keine Merkzettel vorhanden.
+                  </div>
+                ` : appState.quickNotes.map(n => `
+                  <div class="bg-[#111113] border border-[#232329] rounded-[10px] p-3">
+                    <div class="flex items-center justify-between mb-1">
+                      ${renderCategoryBadge(n.subject)}
+                      <button onclick="deleteQuickNote('${n.id}')" class="text-[11px] text-[#78787F] hover:text-[#F87171]">✕</button>
                     </div>
-                    <button onclick="deleteQuickNote('${note.id}')" title="Erledigt / Entfernen" class="text-[#78787F] hover:text-[#F87171] text-[13px] p-1">✕</button>
+                    <p class="text-[12.5px] text-[#D4D4D8] leading-relaxed mt-1.5">${escapeHtml(n.text)}</p>
                   </div>
                 `).join('')}
               </div>
@@ -2106,45 +2334,48 @@
                     <span class="text-[#9A9AA0]">${done} / ${total} Lektionen (${pct}%)</span>
                   </div>
                   <div class="w-full h-2.5 bg-[#111113] rounded-full overflow-hidden border border-[#242428]">
-                    <div class="h-full bg-[#3B82F6] rounded-full transition-all" style="width: ${pct}%;"></div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `;
-    }
-
-    function renderHelpView() {
-      return `
-        <div class="flex-1 overflow-y-auto px-6 sm:px-9 py-7 max-w-3xl">
-          <h1 class="text-[26px] font-bold text-[#F4F4F6] tracking-[-0.02em] mb-1">Help &amp; Study Center</h1>
-          <p class="text-[13.5px] text-[#8E8E93] mb-6">Lernstrategien für deine 3 Prüfungsfächer &amp; Bedienung der Plattform</p>
-          <div class="space-y-4">
-            <div class="bg-[#1A1A1D] border border-[#26262A] rounded-[12px] p-5">
-              <h3 class="text-[15px] font-semibold text-[#F4F4F6] mb-1.5">Rechnungswesen: Die 4-Schritte-Buchungsregel</h3>
-              <p class="text-[13px] text-[#9A9AA0] leading-relaxed">1. Welche Konten sind betroffen? → 2. Aktiv- oder Passivkonto? → 3. Mehrung oder Minderung? → 4. Buchungssatz immer „Soll an Haben“ bilden und Netto/Steuer trennen.</p>
+                <div class="h-full bg-[#3B82F6] rounded-full transition-all" style="width: ${pct}%;"></div>
+              </div>
             </div>
-            <div class="bg-[#1A1A1D] border border-[#26262A] rounded-[12px] p-5">
-              <h3 class="text-[15px] font-semibold text-[#F4F4F6] mb-1.5">Gesprächsgestaltung: Dialoge sicher analysieren</h3>
-              <p class="text-[13px] text-[#9A9AA0] leading-relaxed">Zerlege kritische Aussagen immer in alle 4 Ebenen nach Schulz von Thun (Sache, Selbstoffenbarung, Beziehung, Appell) und formuliere konstruktive Ich-Botschaften.</p>
-            </div>
-            <div class="bg-[#1A1A1D] border border-[#26262A] rounded-[12px] p-5">
-              <h3 class="text-[15px] font-semibold text-[#F4F4F6] mb-1.5">Sozialkunde: Gesetzesgrundlagen &amp; Paragrafen</h3>
-              <p class="text-[13px] text-[#9A9AA0] leading-relaxed">Unterscheide bei Rechtsfällen immer zuerst zwischen Ausbildungsverhältnis (BBiG) und regulärem Arbeitsverhältnis (BGB / KSchG) sowie den Formvorschriften (§ 623 BGB Schriftform).</p>
-            </div>
-          </div>
-        </div>
-      `;
-    }
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
 
     function renderSettingsView() {
       return `
         <div class="flex-1 overflow-y-auto px-6 sm:px-9 py-7 max-w-2xl">
           <h1 class="text-[26px] font-bold text-[#F4F4F6] tracking-[-0.02em] mb-1">Einstellungen</h1>
-          <p class="text-[13.5px] text-[#8E8E93] mb-6">Passe deinen Namen, dein Tagesziel und deine gespeicherten Lerndaten an</p>
+          <p class="text-[13.5px] text-[#8E8E93] mb-6">Passe dein Profilbild, deinen Namen und dein Tagesziel an</p>
           <div class="bg-[#1A1A1D] border border-[#26262A] rounded-[12px] p-5 space-y-5">
+            <!-- Profile Picture Upload Section -->
+            <div class="pb-5 border-b border-[#25252A]">
+              <label class="block text-[13px] font-medium text-[#E4E4E7] mb-3">Profilbild</label>
+              <div class="flex items-center gap-4 flex-wrap">
+                <div class="w-16 h-16 rounded-full overflow-hidden border border-[#34343C] bg-[#111113] shrink-0 shadow-md">
+                  ${getUserAvatarMarkup()}
+                </div>
+                <div class="space-y-2">
+                  <div class="flex items-center gap-2.5 flex-wrap">
+                    <input id="profile-image-input" type="file" accept="image/*" onchange="handleProfileImageUpload(event)" class="hidden" />
+                    <button type="button" onclick="document.getElementById('profile-image-input').click()"
+                            class="px-3.5 py-1.5 rounded-[8px] bg-[#242429] hover:bg-[#2E2E35] border border-[#35353E] text-[12.5px] font-medium text-[#F4F4F6] transition">
+                      Profilbild auswählen
+                    </button>
+                    ${appState.profileImage ? `
+                      <button type="button" onclick="removeProfileImage()"
+                              class="px-3 py-1.5 rounded-[8px] bg-[#EF4444]/12 hover:bg-[#EF4444]/20 border border-[#EF4444]/25 text-[12.5px] font-medium text-[#FCA5A5] transition">
+                        Entfernen
+                      </button>
+                    ` : ''}
+                  </div>
+                  <p class="text-[11.5px] text-[#7E7E87]">JPG, PNG oder WebP — wird automatisch quadratisch angepasst.</p>
+                </div>
+              </div>
+            </div>
+
             <div>
               <label class="block text-[13px] font-medium text-[#E4E4E7] mb-2">Anzeigename</label>
               <input id="user-name-input" type="text" value="${escapeHtml(appState.userName)}"
@@ -2528,78 +2759,6 @@
       openModuleDrawer(cardId);
     }
 
-    function openTemplatesModal() {
-      openModal(`
-        <div class="p-5">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-[16px] font-semibold text-[#F4F4F6]">Lern-Vorlagen (1-Klick Import)</h3>
-            <button onclick="closeModal()" class="text-[#78787F] hover:text-white p-1">✕</button>
-          </div>
-          <div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
-            ${STUDY_TEMPLATES.map(tpl => {
-              const targetCourse = COURSES.find(c => c.id === tpl.courseId);
-              return `
-                <div class="p-3.5 rounded-[10px] bg-[#141416] border border-[#28282E]">
-                  <div class="flex items-center justify-between gap-2 mb-1.5">
-                    ${renderCategoryBadge(targetCourse ? targetCourse.title : tpl.category)}
-                    <span class="text-[11.5px] text-[#8E8E93]">${tpl.duration}</span>
-                  </div>
-                  <div class="text-[14px] font-semibold text-[#F4F4F6] mb-1">${escapeHtml(tpl.title)}</div>
-                  <p class="text-[12px] text-[#8E8E93] mb-3">${escapeHtml(tpl.desc)}</p>
-                  <button onclick="applyStudyTemplate('${tpl.id}')"
-                          class="px-3 py-1.5 rounded-[7px] bg-[#3B82F6] hover:bg-[#2563EB] text-white text-[12px] font-medium transition">
-                    + Als Lernkarte in ${escapeHtml(targetCourse ? targetCourse.title : 'Fach')} einfügen
-                  </button>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `);
-    }
-
-    function applyStudyTemplate(tplId) {
-      const tpl = STUDY_TEMPLATES.find(t => t.id === tplId);
-      if (!tpl) return;
-      const targetCourse = COURSES.find(c => c.id === tpl.courseId) || COURSES[0];
-      targetCourse.cards.unshift({
-        id: 'tpl-card-' + Date.now(),
-        column: 'todo',
-        priority: tpl.priority,
-        category: tpl.category,
-        title: tpl.title,
-        lessonsCount: tpl.totalSteps,
-        notesCount: 1,
-        duration: tpl.duration,
-        completedSteps: 0,
-        totalSteps: tpl.totalSteps,
-        avatars: [0, 1],
-        summary: tpl.desc,
-        theory: [
-          { heading: 'Struktur & Vorgehen', body: tpl.desc }
-        ],
-        codeExample: tpl.checklist.join('\n'),
-        checklist: tpl.checklist.map((text, idx) => ({ id: 'tc-' + idx, text, done: false })),
-        quiz: {
-          question: `Hast du alle Schritte aus der Vorlage „${tpl.title}“ durchgearbeitet?`,
-          options: ['Ja, vollständig angewendet', 'Noch in Arbeit'],
-          correctIndex: 0,
-          explanation: 'Klasse! Strukturierte Lern-Vorlagen sparen Zeit vor Prüfungen.'
-        },
-        notes: [
-          { author: appState.userName, time: 'Gerade eben', text: 'Aus Lern-Vorlagen eingefügt.' }
-        ]
-      });
-
-      appState.activeCourseId = targetCourse.id;
-      appState.showSubjectOverview = false;
-      appState.activeNav = 'projects';
-      savePersistedState();
-      closeModal();
-      renderWorkspace();
-      showToast(`Vorlage in „${targetCourse.title}“ eingefügt`);
-    }
-
     function openNotificationsModal() {
       appState.notifications.forEach(n => n.unread = false);
       const badge = document.getElementById('notif-badge');
@@ -2613,7 +2772,11 @@
             <button onclick="closeModal()" class="text-[#78787F] hover:text-white p-1">✕</button>
           </div>
           <div class="space-y-2.5 max-h-[340px] overflow-y-auto">
-            ${appState.notifications.map(n => `
+            ${appState.notifications.length === 0 ? `
+              <div class="py-8 text-center text-[13px] text-[#8E8E93]">
+                Keine neuen Benachrichtigungen vorhanden.
+              </div>
+            ` : appState.notifications.map(n => `
               <div class="p-3 rounded-[9px] bg-[#141416] border border-[#26262B]">
                 <div class="flex justify-between text-[12px] mb-1">
                   <span class="font-semibold text-[#F4F4F6]">${escapeHtml(n.title)}</span>
@@ -2627,36 +2790,11 @@
       `);
     }
 
-    function openProModal() {
-      openModal(`
-        <div class="p-6 text-center">
-          <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#3B82F6]/15 border border-[#3B82F6]/30 text-[#60A5FA] mb-3">
-            ✦
-          </div>
-          <h3 class="text-[18px] font-bold text-[#F4F4F6] mb-1.5">Studyplus Pro</h3>
-          <p class="text-[13px] text-[#9A9AA0] mb-5">Unbegrenzte Lernprojekte, erweiterte Karteikarten-Decks und Prüfungsexport für alle Fächer.</p>
-          <div class="text-left bg-[#131315] border border-[#26262B] rounded-[10px] p-4 space-y-2 text-[13px] text-[#D4D4D8] mb-5">
-            <div>✓ Unbegrenzte Fächer &amp; eigene Kanban-Boards</div>
-            <div>✓ Unbegrenzte Karteikarten-Decks &amp; Lernstatistiken</div>
-            <div>✓ Export von Zusammenfassungen &amp; Lernplänen</div>
-          </div>
-          <button onclick="closeModal(); showToast('Studyplus Pro 14-Tage-Testphase aktiviert!');"
-                  class="w-full py-2.5 rounded-[8px] bg-[#3B82F6] hover:bg-[#2563EB] text-white text-[13.5px] font-medium transition">
-            14 Tage kostenlos testen
-          </button>
-        </div>
-      `);
-    }
-
     // =========================================================================
     // 7. INTERACTION HANDLERS
     // =========================================================================
 
-    function navigateSection(navId) {
-      appState.activeNav = navId;
-      if (navId === 'projects') {
-        appState.showSubjectOverview = false;
-      }
+    function syncNavHighlight(navId) {
       document.querySelectorAll('.nav-item').forEach(btn => {
         const isTarget = btn.getAttribute('data-nav') === navId;
         if (isTarget) {
@@ -2665,6 +2803,14 @@
           btn.className = 'nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[13.5px] text-[#9A9AA0] hover:text-[#F4F4F6] hover:bg-[#1E1E22] transition';
         }
       });
+    }
+
+    function navigateSection(navId) {
+      appState.activeNav = navId;
+      if (navId === 'projects') {
+        appState.showSubjectOverview = true;
+      }
+      syncNavHighlight(navId);
       toggleMobileSidebar(false);
       renderWorkspace();
     }
@@ -2680,6 +2826,26 @@
       appState.activeNav = 'projects';
       savePersistedState();
       renderWorkspace();
+    }
+
+    function handleFolderCardMove(event, cardEl) {
+      const rect = cardEl.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -3.5;
+      const rotateY = ((x - centerX) / centerX) * 3.5;
+
+      cardEl.style.setProperty('--mouse-x', `${x}px`);
+      cardEl.style.setProperty('--mouse-y', `${y}px`);
+      cardEl.style.setProperty('--tilt-x', `${rotateX.toFixed(2)}deg`);
+      cardEl.style.setProperty('--tilt-y', `${rotateY.toFixed(2)}deg`);
+    }
+
+    function handleFolderCardLeave(cardEl) {
+      cardEl.style.setProperty('--tilt-x', '0deg');
+      cardEl.style.setProperty('--tilt-y', '0deg');
     }
 
     function switchViewTab(tabId) {
@@ -2706,11 +2872,6 @@
         sidebar.classList.add('-translate-x-full');
         backdrop.classList.add('hidden');
       }
-    }
-
-    function dismissPromoCard() {
-      const el = document.getElementById('promo-card');
-      if (el) el.style.display = 'none';
     }
 
     // Drag & Drop handlers
@@ -2959,6 +3120,17 @@
     }
 
     // Settings handlers
+    function adjustTodayProgress(delta) {
+      appState.completedToday = Math.max(0, appState.completedToday + delta);
+      savePersistedState();
+      renderWorkspace();
+      if (appState.completedToday === appState.dailyGoal) {
+        showToast('🎉 Tagesziel erreicht! Starke Leistung!');
+      } else {
+        showToast(`Tagesfortschritt: ${appState.completedToday} / ${appState.dailyGoal} Einheiten`);
+      }
+    }
+
     function saveSettings() {
       const nameVal = document.getElementById('user-name-input')?.value.trim();
       const goalVal = parseInt(document.getElementById('daily-goal-input')?.value || '6', 10);
@@ -2968,6 +3140,47 @@
       showToast('Einstellungen gespeichert');
     }
 
+    function handleProfileImageUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('Bitte wähle eine gültige Bilddatei aus');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          const size = 200;
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          const minSide = Math.min(img.width, img.height);
+          const sx = (img.width - minSide) / 2;
+          const sy = (img.height - minSide) / 2;
+          ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+
+          appState.profileImage = canvas.toDataURL('image/jpeg', 0.85);
+          savePersistedState();
+          updateSidebarAvatar();
+          renderWorkspace();
+          showToast('Profilbild aktualisiert');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeProfileImage() {
+      appState.profileImage = null;
+      savePersistedState();
+      updateSidebarAvatar();
+      renderWorkspace();
+      showToast('Profilbild entfernt');
+    }
+
     function resetAllData() {
       try {
         localStorage.removeItem(STORAGE_KEY);
@@ -2975,9 +3188,16 @@
       COURSES = getDefaultCourses();
       appState.exams = getDefaultExams();
       appState.flashcards = getDefaultFlashcards();
+      appState.quickNotes = [];
+      appState.notifications = [];
       appState.userName = 'Marlii';
+      appState.profileImage = null;
       appState.dailyGoal = 6;
+      appState.completedToday = 0;
       appState.activeCourseId = 'rechnungswesen';
+      updateSidebarAvatar();
+      const badge = document.getElementById('notif-badge');
+      if (badge) badge.classList.add('hidden');
       renderWorkspace();
       showToast('Alle Lernprojekte & Termine zurückgesetzt');
     }
@@ -2994,6 +3214,12 @@
         toast.style.transition = 'opacity 0.2s ease';
         setTimeout(() => toast.remove(), 220);
       }, 2400);
+    }
+
+    function formatGermanDate(isoStr) {
+      if (!isoStr || !isoStr.includes('-')) return isoStr || '';
+      const [y, m, d] = isoStr.split('-');
+      return `${d}.${m}.${y}`;
     }
 
     function escapeHtml(str) {
@@ -3018,6 +3244,11 @@
     // Initial load & render
     window.addEventListener('DOMContentLoaded', () => {
       loadPersistedState();
+      updateSidebarAvatar();
+      syncNavHighlight(appState.activeNav);
+      const hasUnread = appState.notifications.some(n => n.unread);
+      const badge = document.getElementById('notif-badge');
+      if (badge) badge.classList.toggle('hidden', !hasUnread);
       renderWorkspace();
     });
   </script>
